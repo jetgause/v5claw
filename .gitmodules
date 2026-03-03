@@ -13,6 +13,9 @@
 [submodule "kilocode"]
 	path = kilocode
 	url = https://github.com/Kilo-Org/kilocode.git
+[submodule "openclaw"]
+	path = openclaw
+	url = https://github.com/openclaw/openclaw.git
 [submodule "open-webui"]
 	path = open-webui
 	url = https://github.com/open-webui/open-webui.git
