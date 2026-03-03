@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AccessProfiles",
+  "type": "object",
+  "required": ["profiles"],
+  "properties": {
+    "profiles": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["auto_approve", "envelope"],
+        "properties": {
+          "auto_approve": {"type": "boolean"},
+          "envelope": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "fs_allow": {"type": "array", "items": {"type": "string"}},
+              "net_allow": {"type": "array", "items": {"type": "string"}},
+              "cmd_allow": {"type": "array", "items": {"type": "string"}}
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "version": "v0",
+  "capabilities": [
+    "ide.open_file","ide.apply_diff","ide.run_command","ide.get_diagnostics","bridge.status"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Artifact",
+  "type": "object",
+  "required": ["artifact_id", "type", "created_at"],
+  "properties": {
+    "artifact_id": {"type": "string"},
+    "type": {"type": "string", "enum": ["diff", "log", "report", "media", "link", "bundle"]},
+    "created_at": {"type": "string"},
+    "filename": {"type": ["string", "null"]},
+    "content_type": {"type": ["string", "null"]},
+    "meta": {"type": "object", "additionalProperties": true}
+  }
+}

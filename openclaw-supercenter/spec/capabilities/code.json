@@ -1,0 +1,9 @@
+{
+  "version": "v0",
+  "capabilities": [
+    "code.explain","code.search","code.patch.propose","code.patch.compare","code.patch.consensus","code.patch.apply",
+    "code.refactor","code.format","code.generate.tests",
+    "tests.discover","tests.run","build.run","ci.invoke","ci.read.results",
+    "git.status","git.branch.create","git.commit","git.push","git.pr.open","git.pr.review","git.pr.merge"
+  ]
+}

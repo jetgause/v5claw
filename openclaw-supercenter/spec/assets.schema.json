@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Assets",
+  "type": "object",
+  "properties": {
+    "mode": {
+      "type": "object",
+      "required": ["slug", "name", "roleDefinition", "groups"],
+      "properties": {
+        "slug": {"type": "string"},
+        "name": {"type": "string"},
+        "description": {"type": "string"},
+        "roleDefinition": {"type": "string"},
+        "whenToUse": {"type": "string"},
+        "groups": {"type": "array", "items": {"type": "string"}},
+        "fileRegex": {"type": ["string", "null"]},
+        "version": {"type": "string"}
+      }
+    },
+    "skill": {
+      "type": "object",
+      "required": ["skill_id", "name"],
+      "properties": {
+        "skill_id": {"type": "string"},
+        "name": {"type": "string"},
+        "source": {"type": "string"},
+        "version": {"type": "string"}
+      }
+    },
+    "tool": {
+      "type": "object",
+      "required": ["tool_id", "type"],
+      "properties": {
+        "tool_id": {"type": "string"},
+        "type": {"type": "string"},
+        "config": {"type": "object", "additionalProperties": true}
+      }
+    },
+    "agent": {
+      "type": "object",
+      "required": ["agent_id", "name"],
+      "properties": {
+        "agent_id": {"type": "string"},
+        "name": {"type": "string"},
+        "mode_slug": {"type": ["string", "null"]},
+        "skills": {"type": "array", "items": {"type": "string"}},
+        "tools": {"type": "array", "items": {"type": "string"}},
+        "routing_hints": {"type": "object", "additionalProperties": true}
+      }
+    }
+  }
+}

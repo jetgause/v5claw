@@ -1,0 +1,788 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>OpenClaw Super Center (v0)</title>
+  <style>
+    body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+    .layout { display:grid; grid-template-columns: 260px 1fr 320px; height:100vh; }
+    .left, .right { border-right:1px solid #e5e7eb; overflow:auto; }
+    .right { border-right:none; border-left:1px solid #e5e7eb; }
+    .center { overflow:auto; }
+    .hdr { padding:12px 14px; border-bottom:1px solid #e5e7eb; font-weight:600; }
+    .nav { padding:8px; }
+    .nav button { width:100%; text-align:left; padding:8px 10px; margin:4px 0; border:1px solid #e5e7eb; background:#fff; border-radius:8px; cursor:pointer; }
+    .nav button.active { background:#f3f4f6; }
+    .pane { padding:14px; }
+    .card { border:1px solid #e5e7eb; border-radius:12px; padding:12px; margin:10px 0; }
+    .row { display:flex; gap:10px; flex-wrap:wrap; }
+    input, select, textarea { padding:8px; border:1px solid #e5e7eb; border-radius:8px; }
+    textarea { width:100%; height:90px; }
+    .small { font-size:12px; color:#6b7280; }
+    pre { background:#0b1020; color:#e5e7eb; padding:10px; border-radius:10px; overflow:auto; }
+    .tag { font-size:12px; padding:2px 8px; border-radius:999px; border:1px solid #e5e7eb; }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <div class="left">
+    <div class="hdr">Operate (27-module v0)</div>
+    <div class="nav" id="leftNav"></div>
+  </div>
+
+  <div class="center">
+    <div class="hdr" id="centerTitle">Home</div>
+    <div class="pane" id="centerPane"></div>
+  </div>
+
+  <div class="right">
+    <div class="hdr">Control</div>
+    <div class="nav" id="rightNav"></div>
+  </div>
+</div>
+
+<script>
+const API = location.origin;
+
+const leftModules = [
+  {id: 'home', name:'1) Home'},
+  {id: 'runs', name:'2) Runs'},
+  {id: 'composer', name:'3) Run Composer'},
+  {id: 'projects', name:'4) Projects'},
+  {id: 'workspaces', name:'5) Workspaces'},
+  {id: 'files', name:'6) Files'},
+  {id: 'diffs', name:'7) Diffs / Patch Queue'},
+  {id: 'tests', name:'8) Tests / Builds'},
+  {id: 'git', name:'9) Git / PR'},
+  {id: 'skills', name:'10) Skills'},
+  {id: 'tools', name:'11) Tools'},
+  {id: 'modes', name:'12) Modes'},
+  {id: 'agents', name:'13) Agents'},
+  {id: 'automation', name:'14) Automation'},
+];
+
+const rightModules = [
+  {id: 'providers', name:'15) Provider Hub'},
+  {id: 'router', name:'16) Router'},
+  {id: 'access', name:'17) Access Profiles'},
+  {id: 'envelope', name:'18) Permissions Envelope'},
+  {id: 'approvals', name:'19) Approvals'},
+  {id: 'secrets', name:'20) Secrets Broker'},
+  {id: 'memory', name:'21) Memory'},
+  {id: 'context', name:'22) Context Builder'},
+  {id: 'index', name:'23) Index / Search'},
+  {id: 'vault', name:'24) Artifacts Vault'},
+  {id: 'audit', name:'25) Audit Ledger'},
+  {id: 'resources', name:'26) Resource Monitor'},
+  {id: 'settings', name:'27) System Settings'},
+];
+
+function renderNav(container, modules, activeId){
+  container.innerHTML = '';
+  modules.forEach(m => {
+    const b = document.createElement('button');
+    b.textContent = m.name;
+    b.className = (m.id===activeId) ? 'active' : '';
+    b.onclick = () => setActive(m.id);
+    container.appendChild(b);
+  });
+}
+
+let active = 'home';
+let currentRunId = null;
+let runWS = null;
+
+async function setActive(id){
+  active = id;
+  render();
+}
+
+function render(){
+  renderNav(document.getElementById('leftNav'), leftModules, active);
+  renderNav(document.getElementById('rightNav'), rightModules, active);
+  const title = [...leftModules, ...rightModules].find(m=>m.id===active)?.name || active;
+  document.getElementById('centerTitle').textContent = title;
+  const pane = document.getElementById('centerPane');
+  pane.innerHTML = '';
+
+  const views = {
+    home: renderHome,
+    runs: renderRuns,
+    composer: renderComposer,
+    providers: renderProviders,
+    projects: renderProjects,
+    vault: renderVault,
+
+    approvals: renderApprovals,
+    secrets: renderSecrets,
+    automation: renderAutomation,
+
+    modes: (pane)=>renderAssets(pane,'modes','Modes'),
+    skills: (pane)=>renderAssets(pane,'skills','Skills'),
+    tools: (pane)=>renderAssets(pane,'tools','Tools'),
+    agents: (pane)=>renderAssets(pane,'agents','Agents'),
+
+    access: renderAccess,
+    settings: renderSettings,
+    audit: renderAudit,
+  };
+  (views[active] || renderPlaceholder)(pane);
+}
+
+function renderPlaceholder(pane){
+  pane.innerHTML = `<div class="card"><div><b>Module not wired yet (v0)</b></div><div class="small">This workstation skeleton is in place. Wire this module to Bridge APIs next.</div></div>`;
+}
+
+
+async function apiGet(path){
+  const r = await fetch(`${API}${path}`);
+  if(!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+async function apiPost(path, body){
+  const r = await fetch(`${API}${path}`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+  if(!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+async function apiPut(path, body){
+  const r = await fetch(`${API}${path}`, {method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+  if(!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+async function apiDel(path){
+  const r = await fetch(`${API}${path}`, {method:'DELETE'});
+  if(!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+function esc(s){ return (s??'').toString().replace(/[&<>"]/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+
+async function renderAssets(pane, kind, label){
+  pane.innerHTML = `<div class="card"><b>${label}</b><div class="small">Stored in Bridge registry (PUT/DELETE). Value should be JSON.</div></div>`;
+  const listCard = document.createElement('div'); listCard.className='card';
+  listCard.innerHTML = `<div style="font-weight:600; margin-bottom:8px;">${label} List</div><div id="assetList" class="small">Loading...</div>`;
+  pane.appendChild(listCard);
+
+  const editor = document.createElement('div'); editor.className='card';
+  editor.innerHTML = `
+    <div style="font-weight:600; margin-bottom:8px;">Create / Update</div>
+    <div class="row">
+      <input id="assetKey" placeholder="key (e.g. my_mode_v1)" style="flex:1"/>
+      <button id="assetSave">Save</button>
+      <button id="assetRefresh">Refresh</button>
+    </div>
+    <div class="small" style="margin-top:6px;">JSON value:</div>
+    <textarea id="assetVal" placeholder='{"name":"..."}'></textarea>
+    <div id="assetMsg" class="small"></div>
+  `;
+  pane.appendChild(editor);
+
+  async function refresh(){
+    try{
+      const data = await apiGet(`/assets/${kind}`);
+      const keys = Object.keys(data||{});
+      const rows = keys.sort().map(k=>{
+        const v = data[k];
+        return `<div style="border-top:1px solid #e5e7eb; padding:8px 0;">
+          <div class="row" style="justify-content:space-between; align-items:center;">
+            <div><b>${esc(k)}</b></div>
+            <div class="row">
+              <button data-act="load" data-k="${esc(k)}">Load</button>
+              <button data-act="del" data-k="${esc(k)}">Delete</button>
+            </div>
+          </div>
+          <pre style="margin-top:6px; max-height:180px;">${esc(JSON.stringify(v, null, 2))}</pre>
+        </div>`;
+      }).join('');
+      listCard.querySelector('#assetList').innerHTML = keys.length ? rows : '<i>None</i>';
+
+      listCard.querySelectorAll('button[data-act]').forEach(btn=>{
+        btn.onclick = async ()=>{
+          const k = btn.getAttribute('data-k');
+          const act = btn.getAttribute('data-act');
+          if(act==='load'){
+            document.getElementById('assetKey').value = k;
+            document.getElementById('assetVal').value = JSON.stringify(data[k], null, 2);
+            document.getElementById('assetMsg').textContent = 'Loaded.';
+          } else if(act==='del'){
+            if(!confirm(`Delete ${k}?`)) return;
+            await apiDel(`/assets/${kind}/${encodeURIComponent(k)}`);
+            await refresh();
+          }
+        };
+      });
+    } catch(e){
+      listCard.querySelector('#assetList').textContent = e.toString();
+    }
+  }
+
+  editor.querySelector('#assetSave').onclick = async ()=>{
+    const k = document.getElementById('assetKey').value.trim();
+    const raw = document.getElementById('assetVal').value.trim();
+    const msg = document.getElementById('assetMsg');
+    if(!k){ msg.textContent='Key required.'; return; }
+    try{
+      const val = raw ? JSON.parse(raw) : {};
+      await apiPut(`/assets/${kind}`, {key:k, value:val});
+      msg.textContent='Saved.';
+      await refresh();
+    } catch(e){
+      msg.textContent = `Error: ${e}`;
+    }
+  };
+  editor.querySelector('#assetRefresh').onclick = refresh;
+
+  await refresh();
+}
+
+async function renderApprovals(pane){
+  pane.innerHTML = `<div class="card"><b>Approvals</b><div class="small">Pending approvals created by Access Profile / policy rules.</div></div>`;
+  const card = document.createElement('div'); card.className='card';
+  card.innerHTML = `<div style="font-weight:600; margin-bottom:8px;">Pending</div><div id="apList" class="small">Loading...</div>`;
+  pane.appendChild(card);
+
+  async function refresh(){
+    const data = await apiGet('/approvals?status=pending').catch(()=>[]);
+    const rows = (data||[]).map(a=>`
+      <div style="border-top:1px solid #e5e7eb; padding:10px 0;">
+        <div><b>${esc(a.approval_id||a.approvalId||'')}</b> <span class="tag">${esc(a.capability_id||'')}</span></div>
+        <div class="small">Run: ${esc(a.run_id||'')} Step: ${esc(a.step_id||'')}</div>
+        <div class="small">${esc(a.reason||'')}</div>
+        <div class="row" style="margin-top:8px;">
+          <button data-d="approved" data-id="${esc(a.approval_id)}">Approve</button>
+          <button data-d="denied" data-id="${esc(a.approval_id)}">Deny</button>
+          <input data-note="${esc(a.approval_id)}" placeholder="note (optional)" style="flex:1"/>
+        </div>
+      </div>
+    `).join('');
+    card.querySelector('#apList').innerHTML = rows || '<i>None</i>';
+
+    card.querySelectorAll('button[data-d]').forEach(b=>{
+      b.onclick = async ()=>{
+        const id = b.getAttribute('data-id');
+        const decision = b.getAttribute('data-d');
+        const noteEl = card.querySelector(`input[data-note="${CSS.escape(id)}"]`);
+        const note = noteEl ? noteEl.value : '';
+        await apiPost(`/approvals/${encodeURIComponent(id)}/respond`, {decision, note});
+        await refresh();
+      };
+    });
+  }
+  await refresh();
+}
+
+async function renderSecrets(pane){
+  pane.innerHTML = `<div class="card"><b>Secrets Broker (v0)</b><div class="small">Stores secret handles. Values are not returned via list. (v0 is plain text storage.)</div></div>`;
+  const list = document.createElement('div'); list.className='card';
+  list.innerHTML = `<div style="font-weight:600; margin-bottom:8px;">Handles</div><div id="secList" class="small">Loading...</div>`;
+  pane.appendChild(list);
+
+  const create = document.createElement('div'); create.className='card';
+  create.innerHTML = `
+    <div style="font-weight:600; margin-bottom:8px;">Create Handle</div>
+    <div class="row"><input id="secName" placeholder="name" style="flex:1"/><button id="secCreate">Create</button></div>
+    <textarea id="secVal" placeholder="secret value (stored; not shown later)"></textarea>
+    <textarea id="secMeta" placeholder='meta JSON (optional)'></textarea>
+    <div id="secMsg" class="small"></div>
+  `;
+  pane.appendChild(create);
+
+  const bind = document.createElement('div'); bind.className='card';
+  bind.innerHTML = `
+    <div style="font-weight:600; margin-bottom:8px;">Bind Handle to Project</div>
+    <div class="row">
+      <input id="bindHandle" placeholder="handle_id" style="flex:1"/>
+      <input id="bindProject" placeholder="project_id" style="flex:1"/>
+      <button id="bindBtn">Bind</button>
+    </div>
+    <div id="bindMsg" class="small"></div>
+  `;
+  pane.appendChild(bind);
+
+  async function refresh(){
+    const data = await apiGet('/secrets').catch(()=>[]);
+    const rows = (data||[]).map(s=>`
+      <div style="border-top:1px solid #e5e7eb; padding:10px 0;">
+        <div><b>${esc(s.handle_id)}</b> <span class="tag">${esc(s.name||'')}</span></div>
+        <div class="small">Created: ${esc(s.created_at||'')}</div>
+        <div class="small">Bound projects: ${(s.bound_projects||[]).map(esc).join(', ') || '-'}</div>
+      </div>
+    `).join('');
+    list.querySelector('#secList').innerHTML = rows || '<i>None</i>';
+  }
+
+  create.querySelector('#secCreate').onclick = async ()=>{
+    const name = document.getElementById('secName').value.trim();
+    const value = document.getElementById('secVal').value;
+    const metaRaw = document.getElementById('secMeta').value.trim();
+    const msg = document.getElementById('secMsg');
+    if(!name){ msg.textContent='name required'; return; }
+    let meta = {};
+    try{ meta = metaRaw ? JSON.parse(metaRaw) : {}; } catch(e){ msg.textContent='meta JSON invalid'; return; }
+    const res = await apiPost('/secrets', {name, value, meta}).catch(e=>({error:e.toString()}));
+    msg.textContent = res.error ? res.error : `Created handle: ${res.handle_id || res.handle_id}`;
+    await refresh();
+  };
+
+  bind.querySelector('#bindBtn').onclick = async ()=>{
+    const hid = document.getElementById('bindHandle').value.trim();
+    const pid = document.getElementById('bindProject').value.trim();
+    const msg = document.getElementById('bindMsg');
+    if(!hid || !pid){ msg.textContent='handle_id and project_id required'; return; }
+    await apiPost(`/secrets/${encodeURIComponent(hid)}/bind/${encodeURIComponent(pid)}`, {}).catch(e=>{msg.textContent=e.toString();});
+    msg.textContent='Bound.';
+    await refresh();
+  };
+
+  await refresh();
+}
+
+async function renderAutomation(pane){
+  pane.innerHTML = `<div class="card"><b>Automation</b><div class="small">CRUD + interval runner controls. Use schedules as {interval_seconds, template:{title,project_id,steps:[...]}}</div></div>`;
+
+  const runner = document.createElement('div'); runner.className='card';
+  runner.innerHTML = `<div style="font-weight:600; margin-bottom:8px;">Runner</div>
+    <div class="row">
+      <button id="runStart">Start</button>
+      <button id="runStop">Stop</button>
+      <button id="runStatus">Status</button>
+      <div id="runStat" class="small" style="flex:1"></div>
+    </div>`;
+  runner.querySelector('#runStart').onclick = async ()=>{ await fetch(`${API}/automation/runner/start`, {method:'POST'}); render(); };
+  runner.querySelector('#runStop').onclick = async ()=>{ await fetch(`${API}/automation/runner/stop`, {method:'POST'}); render(); };
+  runner.querySelector('#runStatus').onclick = async ()=>{ const s = await fetch(`${API}/automation/runner/status`).then(r=>r.json()).catch(()=>({})); runner.querySelector('#runStat').textContent = JSON.stringify(s); };
+  pane.appendChild(runner);
+
+
+  const kinds = ['schedules','triggers','watchers','templates'];
+  const sel = document.createElement('div'); sel.className='card';
+  sel.innerHTML = `
+    <div class="row">
+      <select id="autoKind">${kinds.map(k=>`<option value="${k}">${k}</option>`).join('')}</select>
+      <input id="autoKey" placeholder="key" style="flex:1"/>
+      <button id="autoLoad">Load</button>
+      <button id="autoSave">Save</button>
+      <button id="autoDel">Delete</button>
+      <button id="autoRefresh">Refresh</button>
+    </div>
+    <textarea id="autoVal" placeholder='JSON value'></textarea>
+    <div id="autoMsg" class="small"></div>
+  `;
+  pane.appendChild(sel);
+
+  const list = document.createElement('div'); list.className='card';
+  list.innerHTML = `<div style="font-weight:600; margin-bottom:8px;">List</div><div id="autoList" class="small">Loading...</div>`;
+  pane.appendChild(list);
+
+  async function refresh(){
+    const kind = document.getElementById('autoKind').value;
+    const data = await apiGet(`/automation/${kind}`).catch(()=>({}));
+    const keys = Object.keys(data||{}).sort();
+    list.querySelector('#autoList').innerHTML = keys.length ? keys.map(k=>`
+      <div style="border-top:1px solid #e5e7eb; padding:8px 0;">
+        <div class="row" style="justify-content:space-between; align-items:center;">
+          <div><b>${esc(k)}</b></div>
+          <button data-k="${esc(k)}">Load</button>
+        </div>
+        <pre style="margin-top:6px; max-height:180px;">${esc(JSON.stringify(data[k], null, 2))}</pre>
+      </div>
+    `).join('') : '<i>None</i>';
+    list.querySelectorAll('button[data-k]').forEach(b=>{
+      b.onclick = ()=>{
+        const k=b.getAttribute('data-k');
+        document.getElementById('autoKey').value = k;
+        document.getElementById('autoVal').value = JSON.stringify(data[k], null, 2);
+        document.getElementById('autoMsg').textContent='Loaded.';
+      };
+    });
+  }
+
+  sel.querySelector('#autoRefresh').onclick = refresh;
+  sel.querySelector('#autoLoad').onclick = refresh;
+  sel.querySelector('#autoSave').onclick = async ()=>{
+    const kind = document.getElementById('autoKind').value;
+    const key = document.getElementById('autoKey').value.trim();
+    const raw = document.getElementById('autoVal').value.trim();
+    const msg = document.getElementById('autoMsg');
+    if(!key){ msg.textContent='key required'; return; }
+    try{
+      const val = raw ? JSON.parse(raw) : {};
+      await apiPut(`/automation/${kind}`, {key, value: val});
+      msg.textContent='Saved.';
+      await refresh();
+    }catch(e){ msg.textContent=`Error: ${e}`; }
+  };
+  sel.querySelector('#autoDel').onclick = async ()=>{
+    const kind = document.getElementById('autoKind').value;
+    const key = document.getElementById('autoKey').value.trim();
+    if(!key) return;
+    if(!confirm(`Delete ${kind}/${key}?`)) return;
+    await apiDel(`/automation/${kind}/${encodeURIComponent(key)}`);
+    document.getElementById('autoMsg').textContent='Deleted.';
+    await refresh();
+  };
+
+  await refresh();
+}
+
+async function renderAccess(pane){
+  pane.innerHTML = `
+    <div class="card">
+      <b>Access Profiles (v0)</b>
+      <div class="small">Profiles are enforced for approvals on certain capability prefixes. 'elevated' auto-approves.</div>
+      <div class="small">Set per Run when creating a run.</div>
+      <pre>${esc(JSON.stringify({standard:{requires_approval:['workspace.exec.*','ide.run_command']}, elevated:{auto_approve:true}}, null, 2))}</pre>
+    </div>
+  `;
+}
+
+async function renderSettings(pane){
+  pane.innerHTML = `<div class="card"><b>System Settings</b><div class="small">v0: settings live in environment variables + data dir. Future: editable settings registry.</div></div>`;
+}
+
+async function renderAudit(pane){
+  pane.innerHTML = `<div class="card"><b>Audit Ledger</b><div class="small">v0: audit is the event log per run. Use Runs view to inspect events. Future: query endpoints.</div></div>`;
+}
+
+async function renderHome(pane){
+  const providers = await fetch(`${API}/providers`).then(r=>r.json()).catch(()=>[]);
+  const runs = await fetch(`${API}/runs`).then(r=>r.json()).catch(()=>[]);
+  pane.innerHTML = `
+    <div class="card">
+      <div class="row">
+        <span class="tag">Providers: ${providers.length}</span>
+        <span class="tag">Runs: ${runs.length}</span>
+        <span class="tag">Current Run: ${currentRunId || 'none'}</span>
+      </div>
+      <div class="small" style="margin-top:8px;">v0 bridge + UI are live. Register providers, create a run, add steps, watch events stream.</div>
+    </div>
+  `;
+  const quick = document.createElement('div');
+  quick.className = 'card';
+  quick.innerHTML = `
+    <div style="font-weight:600; margin-bottom:8px;">Quick: Create Run</div>
+    <div class="row">
+      <input id="runTitle" placeholder="Run title" style="flex:1"/>
+      <select id="accessProfile">
+        <option value="standard">standard</option>
+        <option value="elevated">elevated</option>
+      </select>
+    </div>
+    <textarea id="runPrompt" placeholder="Prompt (optional)"></textarea>
+    <div class="row">
+      <button id="createRunBtn">Create Run</button>
+    </div>
+    <div class="small">After creating, go to Runs tab to add steps and stream events.</div>
+  `;
+  pane.appendChild(quick);
+  quick.querySelector('#createRunBtn').onclick = async () => {
+    const title = quick.querySelector('#runTitle').value || 'Untitled Run';
+    const access_profile = quick.querySelector('#accessProfile').value;
+    const prompt = quick.querySelector('#runPrompt').value || null;
+    const res = await fetch(`${API}/runs`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({title, access_profile, prompt})}).then(r=>r.json());
+    currentRunId = res.run_id;
+    attachRunWS(currentRunId);
+    setActive('runs');
+  };
+}
+
+async function renderProviders(pane){
+  const providers = await fetch(`${API}/providers`).then(r=>r.json()).catch(()=>[]);
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `<div style="font-weight:600; margin-bottom:8px;">Registered Providers</div>`;
+  const list = document.createElement('div');
+  providers.forEach(p => {
+    const d = document.createElement('div');
+    d.className = 'card';
+    d.innerHTML = `
+      <div><b>${p.provider_id}</b> <span class="small">${p.display_name || ''}</span></div>
+      <div class="small">base_url: ${p.base_url} • caps: ${p.capabilities.length} • last_seen: ${p.last_seen}</div>
+    `;
+    list.appendChild(d);
+  });
+  card.appendChild(list);
+  pane.appendChild(card);
+
+  const reg = document.createElement('div');
+  reg.className='card';
+  reg.innerHTML = `
+    <div style="font-weight:600; margin-bottom:8px;">Register Provider (manual)</div>
+    <div class="row">
+      <input id="pid" placeholder="provider_id"/>
+      <input id="base" placeholder="base_url (e.g. http://localhost:5010)" style="flex:1"/>
+    </div>
+    <div class="row">
+      <input id="caps" placeholder="capabilities comma-separated" style="flex:1"/>
+    </div>
+    <div class="row"><button id="regbtn">Register</button></div>
+    <div class="small">Use this to register stub providers while wiring adapters.</div>
+  `;
+  pane.appendChild(reg);
+  reg.querySelector('#regbtn').onclick = async () => {
+    const provider_id = reg.querySelector('#pid').value;
+    const base_url = reg.querySelector('#base').value;
+    const capabilities = reg.querySelector('#caps').value.split(',').map(s=>s.trim()).filter(Boolean);
+    await fetch(`${API}/providers/register`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({provider_id, base_url, capabilities, constraints:{}, supports_streaming:false})});
+    render();
+  };
+}
+
+async function renderRuns(pane){
+  const runs = await fetch(`${API}/runs`).then(r=>r.json()).catch(()=>[]);
+  const card = document.createElement('div');
+  card.className='card';
+  card.innerHTML = `<div style="font-weight:600; margin-bottom:8px;">Runs</div>`;
+  runs.sort((a,b)=> (a.created_at||'').localeCompare(b.created_at||'')).reverse();
+  runs.forEach(r => {
+    const d = document.createElement('div');
+    d.className='card';
+    d.innerHTML = `
+      <div class="row" style="justify-content:space-between; align-items:center;">
+        <div><b>${r.run_id}</b> <span class="small">${r.title}</span></div>
+        <button>Open</button>
+      </div>
+      <div class="small">steps: ${(r.steps||[]).length} • access: ${r.access_profile} • created: ${r.created_at}</div>
+    `;
+    d.querySelector('button').onclick = () => { currentRunId = r.run_id; attachRunWS(currentRunId); renderRunDetail(pane, r.run_id); };
+    card.appendChild(d);
+  });
+  pane.appendChild(card);
+
+  if (currentRunId){
+    await renderRunDetail(pane, currentRunId);
+  } else {
+    const hint = document.createElement('div');
+    hint.className='card';
+    hint.innerHTML = `<div><b>No run selected.</b></div><div class="small">Create a run in Home and then add steps here.</div>`;
+    pane.appendChild(hint);
+  }
+}
+
+async function renderRunDetail(pane, runId){
+  const data = await fetch(`${API}/runs/${runId}`).then(r=>r.json());
+  const run = data.run;
+  const events = data.events || [];
+
+  const detail = document.createElement('div');
+  detail.className='card';
+  detail.innerHTML = `
+    <div style="font-weight:600;">Run: ${runId}</div>
+    <div class="row" style="justify-content:space-between; align-items:center;"><div class="small">${run.title} • access: ${run.access_profile}</div><div><a class="small" href="${API}/runs/${runId}/export" target="_blank">Export Bundle</a> • <a class="small" href="#" id="replayLink">Replay Run</a></div></div>
+  `;
+
+  const replayLink = detail.querySelector('#replayLink');
+  if (replayLink){
+    replayLink.onclick = async (e)=>{ e.preventDefault(); const r = await fetch(`${API}/runs/${runId}/replay`, {method:'POST'}).then(r=>r.json()); alert('Replay started: '+r.run_id); render(); };
+  }
+
+  const add = document.createElement('div');
+  add.className='card';
+  add.innerHTML = `
+    <div style="font-weight:600; margin-bottom:8px;">Add Step</div>
+    <div class="row">
+      <input id="cap" placeholder="capability_id (e.g. page.goto)" style="flex:1"/>
+      <select id="pid"></select>
+    </div>
+    <div class="row">
+      <div id="targetsBox" style="flex:1; border:1px solid #e5e7eb; padding:6px; border-radius:8px; max-height:90px; overflow:auto;"></div>
+      <select id="strategy">
+        <option value="">strategy (default all)</option>
+        <option value="all">all</option>
+        <option value="race">race</option>
+        <option value="vote">vote</option>
+      </select>
+    </div>
+    <textarea id="payload" placeholder='payload JSON (e.g. {"url":"https://example.com"})'></textarea>
+    <div class="row"><button id="addbtn">Add + Execute</button></div>
+  `;
+  // populate provider select
+  const pidSel = add.querySelector('#pid');
+  if (pidSel) pidSel.innerHTML = providerOptionsHtml(null);
+
+  add.querySelector('#addbtn').onclick = async () => {
+    const capability_id = add.querySelector('#cap').value.trim();
+    const provider_id = add.querySelector('#pid').value.trim() || null;
+    const targetsBox = add.querySelector('#targetsBox');
+    // render provider checkboxes
+    if (targetsBox && targetsBox.children.length===0){
+      providersCache.forEach(p=>{
+        const lbl=document.createElement('label'); lbl.style.display='block'; lbl.style.fontSize='12px';
+        lbl.innerHTML = `<input type='checkbox' value='${p.provider_id}'/> ${p.provider_id}`;
+        targetsBox.appendChild(lbl);
+      });
+    }
+    const targetsStr = '';
+
+    const checks = Array.from(add.querySelectorAll('#targetsBox input[type=checkbox]')).filter((c:any)=>c.checked).map((c:any)=>c.value);
+    const targets = checks.length? checks : null;
+    const strategy = (add.querySelector('#strategy')?.value || '').trim();
+    let payload = {};
+    try { payload = JSON.parse(add.querySelector('#payload').value || '{}'); } catch(e){ alert('Invalid JSON payload'); return; }
+    if (strategy) { payload = {...payload, strategy}; }
+    await fetch(`${API}/runs/${runId}/steps`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({capability_id, provider_id, targets, payload})});
+    render();
+  };
+
+  const ev = document.createElement('div');
+  ev.className='card';
+  ev.innerHTML = `<div style="font-weight:600; margin-bottom:8px;">Event Stream</div><div class="small">Live via WS when attached. Screenshot/PDF payloads render below automatically.</div>`;
+  const pre = document.createElement('pre');
+  pre.id = 'eventsPre';
+  pre.textContent = events.slice(-200).map(e=>JSON.stringify(e)).join('\n');
+  ev.appendChild(pre);
+
+  const qa = document.createElement('div');
+  qa.className = 'card';
+  qa.innerHTML = `<div style="font-weight:600; margin-bottom:8px;">Quick Artifacts (from events)</div><div id="quickArts" class="small">(none yet)</div>`;
+
+  
+  // Consensus diffs from latest step completion events
+  const cons = document.createElement('div');
+  cons.className='card';
+  cons.innerHTML = `<div style="font-weight:600; margin-bottom:8px;">Consensus Diffs</div><div class="small">If providers return a 'diff' field, you can apply it via ide.apply_diff to the embedded IDE provider.</div>`;
+  const diffs = [];
+  events.slice().reverse().forEach(e=>{
+    if ((e.type==='step.completed' || e.type==='step.failed') && e.payload){
+      const res = e.payload.results || [];
+      res.forEach(r=>{
+        if (r.result && typeof r.result.diff==='string' && r.result.diff.trim()){
+          diffs.push({provider_id:r.provider_id, diff:r.result.diff});
+        }
+      });
+    }
+  });
+  if (!diffs.length){
+    cons.innerHTML += `<div class="small">(no diffs detected)</div>`;
+  } else {
+    diffs.slice(0,5).forEach((d,i)=>{
+      const box=document.createElement('div');
+      box.className='card';
+      box.innerHTML = `<div class="small"><b>${d.provider_id}</b></div><textarea style="height:120px;">${d.diff.replace(/</g,'&lt;')}</textarea><div class="row"><button>Apply via provider.ide_embedded</button></div>`;
+      box.querySelector('button').onclick = async ()=>{
+        await fetch(`${API}/runs/${runId}/steps`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({capability_id:'ide.apply_diff', provider_id:'provider.ide_embedded', payload:{diff: box.querySelector('textarea').value}})});
+        alert('Apply diff step queued');
+        render();
+      };
+      cons.appendChild(box);
+    });
+  }
+
+pane.appendChild(detail);
+  pane.appendChild(add);
+  pane.appendChild(qa);
+  pane.appendChild(ev);
+}
+
+async function renderProjects(pane){
+  const projects = await fetch(`${API}/projects`).then(r=>r.json()).catch(()=>[]);
+  const card = document.createElement('div');
+  card.className='card';
+  card.innerHTML = `<div style="font-weight:600; margin-bottom:8px;">Projects</div>`;
+  projects.forEach(p=>{
+    const d = document.createElement('div');
+    d.className='card';
+    d.innerHTML = `<div><b>${p.project_id}</b> <span class="small">${p.name}</span></div>`;
+    card.appendChild(d);
+  });
+  pane.appendChild(card);
+
+  const create = document.createElement('div');
+  create.className='card';
+  create.innerHTML = `
+    <div style="font-weight:600; margin-bottom:8px;">Create Project</div>
+    <div class="row"><input id="pname" placeholder="Project name" style="flex:1"/><button id="pbtn">Create</button></div>
+    <div class="small">v0 stores projects in-memory.</div>
+  `;
+  create.querySelector('#pbtn').onclick = async () => {
+    const name = create.querySelector('#pname').value || 'Untitled';
+    await fetch(`${API}/projects`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name})});
+    render();
+  };
+  pane.appendChild(create);
+}
+
+async function renderComposer(pane){
+  pane.innerHTML = `
+    <div class="card"><div><b>Run Composer (v0)</b></div>
+      <div class="small">This module will become the DAG editor. For v0, add steps from Runs tab.</div>
+    </div>
+  `;
+}
+
+async function renderVault(pane){
+  if (!currentRunId){
+    pane.innerHTML = `<div class="card"><b>Select a run first.</b></div>`;
+    return;
+  }
+  const files = await fetch(`${API}/artifacts/list/${currentRunId}`).then(r=>r.json()).catch(()=>[]);
+  const card = document.createElement('div');
+  card.className='card';
+  card.innerHTML = `<div style="font-weight:600;">Artifacts for ${currentRunId}</div>`;
+  const ul = document.createElement('ul');
+  files.forEach(f=>{
+    const li = document.createElement('li');
+    li.textContent = f.filename;
+    ul.appendChild(li);
+  });
+  card.appendChild(ul);
+  pane.appendChild(card);
+}
+
+function attachRunWS(runId){
+  if (runWS){ try { runWS.close(); } catch(e){} }
+  runWS = new WebSocket(`${location.protocol==='https:'?'wss':'ws'}://${location.host}/ws/runs/${runId}`);
+  runWS.onmessage = (ev) => {
+    const pre = document.getElementById('eventsPre');
+    if (!pre) return;
+    pre.textContent += (pre.textContent ? '\n' : '') + ev.data;
+    pre.scrollTop = pre.scrollHeight;
+
+    // Render quick artifacts
+    try {
+      const msg = JSON.parse(ev.data);
+      const qa = document.getElementById('quickArts');
+      if (!qa) return;
+      const payload = msg.payload || {};
+      // provider result nested
+      const res = payload.result || payload;
+      const imgB64 = res.screenshot_base64 || res.image_base64;
+      const pdfB64 = res.pdf_base64;
+      if (imgB64){
+        if (qa.textContent.includes('(none yet)')) qa.textContent='';
+        const img = document.createElement('img');
+        img.src = 'data:image/jpeg;base64,' + imgB64;
+        img.style.maxWidth = '100%';
+        img.style.border = '1px solid #e5e7eb';
+        img.style.borderRadius = '10px';
+        img.style.marginTop = '8px';
+        qa.appendChild(img);
+      }
+      if (pdfB64){
+        if (qa.textContent.includes('(none yet)')) qa.textContent='';
+        const a = document.createElement('a');
+        a.textContent = 'Download PDF from event';
+        a.href = 'data:application/pdf;base64,' + pdfB64;
+        a.download = 'page.pdf';
+        a.style.display = 'inline-block';
+        a.style.marginTop = '8px';
+        qa.appendChild(a);
+      }
+    } catch(e){}
+  };
+}
+
+render();
+</script>
+</body>
+</html>
+let providersCache = [];
+async function loadProviders(){
+  providersCache = await fetch(`${API}/providers`).then(r=>r.json()).catch(()=>[]);
+  return providersCache;
+}
+function providerOptionsHtml(selected){
+  return ['<option value="">(auto)</option>'].concat(providersCache.map(p=>`<option value="${p.provider_id}" ${selected===p.provider_id?'selected':''}>${p.provider_id}</option>`)).join('');
+}
+

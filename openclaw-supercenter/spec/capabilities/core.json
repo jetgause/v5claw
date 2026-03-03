@@ -1,0 +1,10 @@
+{
+  "version": "v0",
+  "capabilities": [
+    "run.create","run.plan.generate","run.step.add","run.step.execute","run.step.rerun","run.pause","run.resume","run.cancel","run.export.bundle","run.replay",
+    "router.select_provider","router.pin_provider","router.route.multitarget","orchestrator.auto_optimize",
+    "project.create","project.bind.repo","project.set.preferences",
+    "workspace.backend.attach","workspace.backend.detach","workspace.clone_repo","workspace.sync_status",
+    "workspace.fs.list","workspace.fs.read","workspace.fs.write","workspace.exec.command","workspace.exec.task"
+  ]
+}

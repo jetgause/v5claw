@@ -1,0 +1,12 @@
+{
+  "version": "v0",
+  "capabilities": [
+    "skill.search","skill.install","skill.version.pin","skill.run","skill.permissions.inspect","skill.promote.from_run",
+    "mode.search","mode.install.import","mode.create","mode.edit","mode.pin.project","mode.compile.policy","profile.access.select",
+    "tool.catalog.list","tool.enable.project","tool.invoke","tool.session.open","tool.session.close","tool.healthcheck",
+    "memory.view","memory.propose_write","memory.write","memory.forget","context.pin","context.unpin","context.build.from_repo","context.build.from_run",
+    "channel.connect","channel.route.bind_project","channel.message.send","notify.send",
+    "automation.schedule.create","automation.schedule.run_now","automation.trigger.create","automation.watch.create","automation.template.create",
+    "policy.evaluate","approval.queue.view","approval.respond","secrets.handle.create","secrets.handle.bind_project","audit.query","audit.export","resources.view","system.settings.update"
+  ]
+}

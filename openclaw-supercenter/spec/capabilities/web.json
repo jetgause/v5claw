@@ -1,0 +1,9 @@
+{
+  "version": "v0",
+  "capabilities": [
+    "browser.launch","browser.connect","browser.close",
+    "page.goto","page.click","page.type","page.waitFor","page.evaluate","page.extract",
+    "page.screenshot","page.pdf","page.trace",
+    "session.share.start","session.share.stop","session.share.input","session.share.stream"
+  ]
+}

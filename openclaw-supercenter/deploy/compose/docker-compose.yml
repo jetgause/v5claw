@@ -1,0 +1,108 @@
+version: '3.9'
+services:
+  supercenter-bridge:
+    image: python:3.11-slim
+    working_dir: /app
+    volumes:
+      - ../../bridge:/app/bridge
+      - ../../ui:/app/ui
+      - ../../data:/app/data
+    environment:
+      - SUPER_CENTER_DATA=/app/data
+    command: bash -lc "pip install -r /app/bridge/requirements.txt && PYTHONPATH=/app/bridge uvicorn app.main:app --host 0.0.0.0 --port 8080"
+    ports:
+      - "8080:8080"
+
+  openclaw-native-provider:
+    image: python:3.11-slim
+    working_dir: /app
+    volumes:
+      - ../../providers/openclaw_native:/app
+    environment:
+      - PORT=5005
+      - BRIDGE_URL=http://supercenter-bridge:8080
+    command: bash -lc "pip install fastapi uvicorn httpx && uvicorn provider:app --host 0.0.0.0 --port 5005"
+    ports:
+      - "5005:5005"
+
+  agentzero:
+    image: agent0ai/agent-zero:latest
+    ports:
+      - "50001:80"
+
+  agentzero-adapter:
+    image: python:3.11-slim
+    working_dir: /app
+    volumes:
+      - ../../providers/agentzero_adapter:/app
+    environment:
+      - PORT=5007
+      - BRIDGE_URL=http://supercenter-bridge:8080
+      - AGENTZERO_BASE_URL=http://agentzero:80
+    command: bash -lc "pip install fastapi uvicorn httpx && uvicorn provider:app --host 0.0.0.0 --port 5007"
+    ports:
+      - "5007:5007"
+
+  puppeteer-provider:
+    image: node:20-bookworm
+    working_dir: /app
+    volumes:
+      - ../../providers/puppeteer:/app
+    command: bash -lc "npm install && node server.js"
+    environment:
+      - PORT=5010
+      - PROVIDER_ID=provider.puppeteer
+      - BRIDGE_URL=http://supercenter-bridge:8080
+    ports:
+      - "5010:5010"
+
+  kilo-adapter:
+    image: python:3.11-slim
+    working_dir: /app
+    volumes:
+      - ../../providers/kilo_adapter:/app
+    environment:
+      - PORT=5008
+      - BRIDGE_URL=http://supercenter-bridge:8080
+      - KILO_BASE_URL=http://localhost:0
+    command: bash -lc "pip install fastapi uvicorn httpx && uvicorn provider:app --host 0.0.0.0 --port 5008"
+    ports:
+      - "5008:5008"
+
+  roo-adapter:
+    image: python:3.11-slim
+    working_dir: /app
+    volumes:
+      - ../../providers/roo_adapter:/app
+    environment:
+      - PORT=5009
+      - BRIDGE_URL=http://supercenter-bridge:8080
+      - ROO_BASE_URL=http://localhost:0
+    command: bash -lc "pip install fastapi uvicorn httpx && uvicorn provider:app --host 0.0.0.0 --port 5009"
+    ports:
+      - "5009:5009"
+
+  embedded-ide:
+    image: codercom/code-server:4.95.3
+    environment:
+      - PASSWORD=openclaw
+    volumes:
+      - ../../data/workspaces:/home/coder/project
+    ports:
+      - "8443:8080"
+
+  ide-embedded-provider:
+    image: python:3.11-slim
+    working_dir: /app
+    volumes:
+      - ../../providers/ide_embedded_provider:/app
+      - ../../data:/app/data
+    environment:
+      - PORT=5011
+      - PROVIDER_ID=provider.ide_embedded
+      - BRIDGE_URL=http://supercenter-bridge:8080
+      - WORKSPACE_ROOT=/app/data/workspaces
+      - BASE_URL=http://ide-embedded-provider:5011
+    command: bash -lc "pip install -r requirements.txt && uvicorn provider:app --host 0.0.0.0 --port 5011"
+    ports:
+      - "5011:5011"

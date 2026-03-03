@@ -1,0 +1,25 @@
+{
+  "name": "openclaw-supercenter-bridge",
+  "displayName": "OpenClaw Super Center Bridge",
+  "description": "Workspace bridge provider for OpenClaw Super Center",
+  "version": "0.1.0",
+  "publisher": "openclaw",
+  "engines": {"vscode": "^1.85.0"},
+  "categories": ["Other"],
+  "activationEvents": ["*"],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {"command": "openclawSuperCenter.status", "title": "OpenClaw: Show Bridge Status"}
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "tsc -p ."
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.5.4"
+  }
+}
