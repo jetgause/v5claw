@@ -1,0 +1,59 @@
+id: kagi
+name: Kagi Search
+description: Integrates Kagi's advanced search API to provide AI assistants with up-to-date web search capabilities and
+  accurate information retrieval.
+author: kagisearch
+url: https://github.com/kagisearch/kagimcp
+tags:
+  - web-search
+  - information-retrieval
+  - kagi-api
+  - real-time-data
+  - search-engine
+prerequisites:
+  - Kagi account
+content:
+  - name: UVX
+    prerequisites:
+      - Python
+      - uv
+    content: |
+      {
+        "command": "uvx",
+        "args": ["kagimcp"],
+        "env": {
+          "KAGI_API_KEY": "{{KAGI_API_KEY}}",
+          "KAGI_SUMMARIZER_ENGINE": "{{KAGI_SUMMARIZER_ENGINE}}"
+        }
+      }
+  - name: Smithery Installation
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "@smithery/cli", "install", "kagimcp", "--client", "claude"]
+      }
+  - name: Local Development
+    content: |
+      {
+        "command": "uv",
+        "args": ["--directory", "{{KAGI_PATH}}", "run", "kagimcp"],
+        "env": {
+          "KAGI_API_KEY": "{{KAGI_API_KEY}}",
+          "KAGI_SUMMARIZER_ENGINE": "{{KAGI_SUMMARIZER_ENGINE}}"
+        }
+      }
+    parameters:
+      - name: Kagi Path
+        key: KAGI_PATH
+        placeholder: /path/to/kagimcp
+        optional: true
+parameters:
+  - name: Kagi API Key
+    key: KAGI_API_KEY
+    placeholder: your_kagi_api_key_here
+  - name: Kagi Summarizer Engine
+    key: KAGI_SUMMARIZER_ENGINE
+    placeholder: cecil
+    optional: true

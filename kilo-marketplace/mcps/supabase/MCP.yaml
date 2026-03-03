@@ -1,0 +1,29 @@
+id: supabase
+name: Supabase
+description: The official Supabase MCP server connects your AI tools to Supabase to perform tasks like launching
+  databases, managing tables, fetching config, and querying data on your behalf.
+author: supabase
+url: https://supabase.com/docs/guides/mcp
+tags:
+  - supabase
+  - database
+  - postgres
+  - authentication
+  - storage
+  - realtime
+  - official
+prerequisites:
+  - Supabase account
+content:
+  - name: NPX
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "@supabase/mcp-server-supabase@0.5.5", "--access-token", "{{SUPABASE_ACCESS_TOKEN}}"]
+      }
+parameters:
+  - name: Supabase Personal Access Token
+    key: SUPABASE_ACCESS_TOKEN
+    placeholder: sbp_your_supabase_pat

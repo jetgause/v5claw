@@ -1,0 +1,65 @@
+id: cloudflare
+name: Cloudflare
+description: Manages Cloudflare resources including Workers, KV stores, R2 storage, D1 databases, and analytics through
+  natural language interactions.
+author: cloudflare
+url: https://github.com/cloudflare/mcp-server-cloudflare
+tags:
+  - cloudflare
+  - serverless
+  - edge-computing
+  - cloud-storage
+  - database-management
+content:
+  - name: Remote MCP - Observability
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["mcp-remote", "https://observability.mcp.cloudflare.com/sse"]
+      }
+  - name: Remote MCP - Workers Bindings
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["mcp-remote", "https://bindings.mcp.cloudflare.com/sse"]
+      }
+  - name: Remote MCP - Documentation
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["mcp-remote", "https://docs.mcp.cloudflare.com/sse"]
+      }
+  - name: Remote MCP - Workers Builds
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["mcp-remote", "https://builds.mcp.cloudflare.com/sse"]
+      }
+  - name: Remote MCP - Radar
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["mcp-remote", "https://radar.mcp.cloudflare.com/sse"]
+      }
+  - name: Remote MCP - Browser Rendering
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["mcp-remote", "https://browser.mcp.cloudflare.com/sse"]
+      }
+parameters:
+  - name: Cloudflare API Token
+    key: CLOUDFLARE_API_TOKEN
+    placeholder: your_cloudflare_api_token_here

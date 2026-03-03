@@ -1,0 +1,35 @@
+id: youtube
+name: YouTube Subtitles
+description: Downloads and extracts YouTube video subtitles using yt-dlp, enabling AI assistants to analyze and
+  summarize video content through subtitle text.
+author: anaisbetts
+url: https://github.com/anaisbetts/mcp-youtube
+tags:
+  - youtube
+  - subtitles
+  - video-analysis
+  - content-summarization
+  - yt-dlp
+prerequisites:
+  - yt-dlp (install via Homebrew or WinGet)
+content:
+  - name: MCP Installer
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "@anaisbetts/mcp-installer", "@anaisbetts/mcp-youtube"]
+      }
+  - name: NPX
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "@anaisbetts/mcp-youtube"]
+      }
+parameters:
+  - name: Prerequisites
+    key: PREREQUISITES
+    placeholder: Install yt-dlp via Homebrew or WinGet first

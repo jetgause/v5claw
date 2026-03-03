@@ -1,0 +1,91 @@
+id: atlassian
+name: Atlassian
+description: Comprehensive MCP server for Atlassian tools (Confluence and Jira) supporting both Cloud and Server/Data
+  Center deployments with multiple authentication methods including API tokens, Personal Access Tokens, and OAuth 2.0.
+author: sooperset
+url: https://github.com/sooperset/mcp-atlassian
+tags:
+  - atlassian
+  - jira
+  - confluence
+  - project-management
+  - issue-tracking
+  - documentation
+  - collaboration
+  - oauth
+  - api-integration
+prerequisites:
+  - Docker
+  - Atlassian account (Cloud or Server/Data Center)
+content:
+  - name: Docker
+    prerequisites:
+      - Docker
+      - Atlassian Cloud account
+    content: >
+      {
+        "command": "docker",
+        "args": ["run", "-i", "--rm", "-e", "CONFLUENCE_URL", "-e", "CONFLUENCE_USERNAME", "-e", "CONFLUENCE_API_TOKEN", "-e", "JIRA_URL", "-e", "JIRA_USERNAME", "-e", "JIRA_API_TOKEN", "ghcr.io/sooperset/mcp-atlassian@sha256:27c8e5b890e16134a443f49683eaa794fdb48ed5bef785c1b4c88a0cd729df56"],
+        "env": {
+          "CONFLUENCE_URL": "{{CONFLUENCE_URL}}",
+          "CONFLUENCE_USERNAME": "{{CONFLUENCE_USERNAME}}",
+          "CONFLUENCE_API_TOKEN": "{{CONFLUENCE_API_TOKEN}}",
+          "JIRA_URL": "{{JIRA_URL}}",
+          "JIRA_USERNAME": "{{JIRA_USERNAME}}",
+          "JIRA_API_TOKEN": "{{JIRA_API_TOKEN}}"
+        }
+      }
+    parameters:
+      - name: Confluence URL
+        key: CONFLUENCE_URL
+        placeholder: https://your-company.atlassian.net/wiki
+      - name: Confluence Username
+        key: CONFLUENCE_USERNAME
+        placeholder: your.email@company.com
+      - name: Confluence API Token
+        key: CONFLUENCE_API_TOKEN
+        placeholder: your_confluence_api_token
+      - name: Jira URL
+        key: JIRA_URL
+        placeholder: https://your-company.atlassian.net
+      - name: Jira Username
+        key: JIRA_USERNAME
+        placeholder: your.email@company.com
+      - name: Jira API Token
+        key: JIRA_API_TOKEN
+        placeholder: your_jira_api_token
+  - name: UVX
+    prerequisites:
+      - Python and uv
+    content: >
+      {
+        "command": "uvx",
+        "args": ["--from", "mcp-atlassian==0.11.9", "--hash", "sha256:1ba6a171b5299e554d4e0eff98279e74cdc4eb1c12c8e62be924103d9cd38e5e", "mcp-atlassian"],
+        "env": {
+          "CONFLUENCE_URL": "{{CONFLUENCE_URL}}",
+          "CONFLUENCE_USERNAME": "{{CONFLUENCE_USERNAME}}",
+          "CONFLUENCE_API_TOKEN": "{{CONFLUENCE_API_TOKEN}}",
+          "JIRA_URL": "{{JIRA_URL}}",
+          "JIRA_USERNAME": "{{JIRA_USERNAME}}",
+          "JIRA_API_TOKEN": "{{JIRA_API_TOKEN}}"
+        }
+      }
+    parameters:
+      - name: Confluence URL
+        key: CONFLUENCE_URL
+        placeholder: https://your-company.atlassian.net/wiki
+      - name: Confluence Username
+        key: CONFLUENCE_USERNAME
+        placeholder: your.email@company.com
+      - name: Confluence API Token
+        key: CONFLUENCE_API_TOKEN
+        placeholder: your_confluence_api_token
+      - name: Jira URL
+        key: JIRA_URL
+        placeholder: https://your-company.atlassian.net
+      - name: Jira Username
+        key: JIRA_USERNAME
+        placeholder: your.email@company.com
+      - name: Jira API Token
+        key: JIRA_API_TOKEN
+        placeholder: your_jira_api_token

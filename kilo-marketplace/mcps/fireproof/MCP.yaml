@@ -1,0 +1,31 @@
+id: fireproof
+name: Fireproof
+description: A JSON document store server providing CRUD operations and field-based sorting queries, powered by
+  Fireproof database for seamless integration with AI systems.
+author: fireproof-storage
+url: https://github.com/fireproof-storage/mcp-database-server
+tags:
+  - document-store
+  - json
+  - crud
+  - database
+  - storage
+content:
+  - name: Node.js
+    content: |
+      {
+        "command": "node",
+        "args": ["{{FIREPROOF_PATH}}/build/index.js"]
+      }
+  - name: NPM Development
+    content: |
+      {
+        "command": "npm",
+        "args": ["start"],
+        "cwd": "{{FIREPROOF_PATH}}"
+      }
+parameters:
+  - name: Fireproof MCP Path
+    key: FIREPROOF_PATH
+    placeholder: /path/to/fireproof-mcp
+    optional: true

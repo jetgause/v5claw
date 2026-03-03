@@ -1,0 +1,36 @@
+id: context7
+name: Context7
+description: Up-to-date code documentation for LLMs and AI code editors. Provides version-specific documentation and
+  code examples straight from the source, eliminating outdated or hallucinated API information.
+author: upstash
+url: https://github.com/upstash/context7
+tags:
+  - documentation
+  - code-examples
+  - library-docs
+  - up-to-date
+  - api-reference
+  - development
+content:
+  - name: NPX
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "@upstash/context7-mcp"],
+        "env": {
+          "DEFAULT_MINIMUM_TOKENS": "{{DEFAULT_MINIMUM_TOKENS}}"
+        }
+      }
+    parameters:
+      - name: Default Minimum Tokens
+        key: DEFAULT_MINIMUM_TOKENS
+        placeholder: "6000"
+        optional: true
+    prerequisites:
+      - Node.js
+  - name: Remote Server
+    content: |
+      {
+        "type": "streamable-http",
+        "url": "https://mcp.context7.com/mcp"
+      }

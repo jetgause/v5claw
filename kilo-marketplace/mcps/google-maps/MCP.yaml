@@ -1,0 +1,52 @@
+id: google-maps
+name: Google Maps
+description: Provides comprehensive access to Google Maps services including geocoding, place search, directions,
+  distance calculations, and elevation data through the Google Maps API.
+author: modelcontextprotocol
+url: https://github.com/modelcontextprotocol/servers/tree/main/src/google-maps
+tags:
+  - maps
+  - geocoding
+  - navigation
+  - places-api
+  - location-data
+prerequisites:
+  - Google Cloud account with Maps API enabled
+content:
+  - name: UVX
+    prerequisites:
+      - Python and uv
+    content: |
+      {
+        "command": "uvx",
+        "args": ["mcp-server-google-maps"],
+        "env": {
+          "GOOGLE_MAPS_API_KEY": "{{GOOGLE_MAPS_API_KEY}}"
+        }
+      }
+  - name: Python/Pip
+    prerequisites:
+      - Python
+    content: |
+      {
+        "command": "python",
+        "args": ["-m", "mcp_server_google_maps"],
+        "env": {
+          "GOOGLE_MAPS_API_KEY": "{{GOOGLE_MAPS_API_KEY}}"
+        }
+      }
+  - name: Docker
+    prerequisites:
+      - Docker
+    content: |
+      {
+        "command": "docker",
+        "args": ["run", "-i", "--rm", "mcp/google-maps"],
+        "env": {
+          "GOOGLE_MAPS_API_KEY": "{{GOOGLE_MAPS_API_KEY}}"
+        }
+      }
+parameters:
+  - name: Google Maps API Key
+    key: GOOGLE_MAPS_API_KEY
+    placeholder: your_google_maps_api_key

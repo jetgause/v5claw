@@ -1,0 +1,61 @@
+id: time
+name: Time
+description: Provides time and timezone conversion capabilities using IANA timezone names, with automatic system
+  timezone detection and support for current time queries.
+author: modelcontextprotocol
+url: https://github.com/modelcontextprotocol/servers/tree/main/src/time
+tags:
+  - timezone
+  - time-conversion
+  - datetime
+  - scheduling
+  - automation
+content:
+  - name: UVX
+    prerequisites:
+      - Python and uv
+    content: |
+      {
+        "command": "uvx",
+        "args": ["mcp-server-time"]
+      }
+  - name: Python/Pip
+    prerequisites:
+      - Python
+    content: |
+      {
+        "command": "python",
+        "args": ["-m", "mcp_server_time"]
+      }
+  - name: Docker
+    prerequisites:
+      - Docker
+    content: |
+      {
+        "command": "docker",
+        "args": ["run", "-i", "--rm", "mcp/time"]
+      }
+  - name: UVX with Custom Timezone
+    prerequisites:
+      - Python and uv
+    content: |
+      {
+        "command": "uvx",
+        "args": ["mcp-server-time", "--local-timezone={{LOCAL_TIMEZONE}}"]
+      }
+    parameters:
+      - name: Local Timezone
+        key: LOCAL_TIMEZONE
+        placeholder: America/New_York
+  - name: Python/Pip with Custom Timezone
+    prerequisites:
+      - Python
+    content: |
+      {
+        "command": "python",
+        "args": ["-m", "mcp_server_time", "--local-timezone={{LOCAL_TIMEZONE}}"]
+      }
+    parameters:
+      - name: Local Timezone
+        key: LOCAL_TIMEZONE
+        placeholder: America/New_York

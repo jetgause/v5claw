@@ -1,0 +1,33 @@
+id: filesystem
+name: File System
+description: Provides comprehensive filesystem operations including reading, writing, moving files, directory
+  management, and advanced file editing with pattern matching and formatting capabilities.
+author: modelcontextprotocol
+url: https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem
+tags:
+  - filesystem
+  - file-management
+  - directory-operations
+  - file-search
+  - file-editing
+content:
+  - name: NPX
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-filesystem", "{{ALLOWED_DIRECTORY}}"]
+      }
+  - name: Docker
+    prerequisites:
+      - Docker
+    content: >
+      {
+        "command": "docker",
+        "args": ["run", "-i", "--rm", "--mount", "type=bind,src={{ALLOWED_DIRECTORY}},dst=/projects", "mcp/filesystem", "/projects"]
+      }
+parameters:
+  - name: Allowed Directory
+    key: ALLOWED_DIRECTORY
+    placeholder: /Users/username/Documents

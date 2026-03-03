@@ -1,0 +1,81 @@
+id: postgrest
+name: Postgrest
+description: Enables database operations on PostgreSQL through PostgREST, supporting SQL-to-REST conversion and direct
+  API requests for querying and modifying data.
+author: supabase-community
+url: https://github.com/supabase-community/mcp-supabase/tree/HEAD/packages/mcp-server-postgrest
+tags:
+  - postgresql
+  - postgrest
+  - database-api
+  - sql
+  - supabase
+content:
+  - name: NPX
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@supabase/mcp-server-postgrest@0.0.11",
+          "--apiUrl",
+          "{{POSTGREST_API_URL}}",
+          "--apiKey",
+          "{{POSTGREST_API_KEY}}",
+          "--schema",
+          "{{POSTGREST_SCHEMA}}"
+        ]
+      }
+  - name: NPX with Supabase
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@supabase/mcp-server-postgrest@0.0.11",
+          "--apiUrl",
+          "https://{{SUPABASE_PROJECT_REF}}.supabase.co/rest/v1",
+          "--apiKey",
+          "{{SUPABASE_ANON_KEY}}",
+          "--schema",
+          "public"
+        ]
+      }
+    parameters:
+      - name: Supabase Project Reference
+        key: SUPABASE_PROJECT_REF
+        placeholder: your-project-ref
+      - name: Supabase Anon Key
+        key: SUPABASE_ANON_KEY
+        placeholder: your_supabase_anon_key
+  - name: Local Development
+    content: |
+      {
+        "command": "node",
+        "args": ["{{POSTGREST_PATH}}/dist/index.js"],
+        "env": {
+          "POSTGREST_API_URL": "{{POSTGREST_API_URL}}",
+          "POSTGREST_API_KEY": "{{POSTGREST_API_KEY}}",
+          "POSTGREST_SCHEMA": "{{POSTGREST_SCHEMA}}"
+        }
+      }
+    parameters:
+      - name: PostgREST MCP Path
+        key: POSTGREST_PATH
+        placeholder: /path/to/mcp-server-postgrest
+        optional: true
+parameters:
+  - name: PostgREST API URL
+    key: POSTGREST_API_URL
+    placeholder: https://your-project-ref.supabase.co/rest/v1
+  - name: PostgREST API Key
+    key: POSTGREST_API_KEY
+    placeholder: your_postgrest_api_key
+    optional: true
+  - name: PostgREST Schema
+    key: POSTGREST_SCHEMA
+    placeholder: public

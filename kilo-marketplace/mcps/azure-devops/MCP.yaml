@@ -1,0 +1,39 @@
+id: azure-devops
+name: Azure DevOps
+description: Official Microsoft MCP server for Azure DevOps integration, bringing comprehensive Azure DevOps
+  functionality directly to your AI agents. Supports work items, repositories, builds, releases, test plans, and search
+  across your Azure DevOps organization with 50+ tools for complete DevOps automation.
+author: microsoft
+url: https://github.com/microsoft/azure-devops-mcp
+tags:
+  - azure-devops
+  - microsoft
+  - devops
+  - work-items
+  - repositories
+  - builds
+  - releases
+  - test-plans
+  - project-management
+  - ci-cd
+  - version-control
+  - pull-requests
+  - search
+  - official
+prerequisites:
+  - Azure DevOps organization
+  - Azure CLI authentication
+content:
+  - name: NPX
+    prerequisites:
+      - Node.js
+      - Azure CLI (logged in with az login)
+    content: >
+      {
+        "command": "npx",
+        "args": ["-y", "@azure-devops/mcp@1.0.0", "--hash", "sha1:742d3aa74ec8a13283a62c77c9fc5c2a0d276624", "{{AZURE_DEVOPS_ORG}}"]
+      }
+    parameters:
+      - name: Azure DevOps Organization
+        key: AZURE_DEVOPS_ORG
+        placeholder: contoso

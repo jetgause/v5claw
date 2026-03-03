@@ -1,0 +1,39 @@
+id: needle
+name: Needle Search
+description: Enables document management and natural language search capabilities through the Needle platform, allowing
+  users to organize, store, and retrieve documents using Claude's language model.
+author: needle-ai
+url: https://github.com/needle-ai/needle-mcp
+tags:
+  - document-management
+  - search
+  - knowledge-base
+  - needle-api
+  - content-organization
+content:
+  - name: Smithery Installation
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "@smithery/cli", "install", "needle-mcp", "--client", "claude"]
+      }
+  - name: UV with Local Development
+    content: |
+      {
+        "command": "uv",
+        "args": ["--directory", "{{NEEDLE_PATH}}", "run", "needle-mcp"],
+        "env": {
+          "NEEDLE_API_KEY": "{{NEEDLE_API_KEY}}"
+        }
+      }
+    parameters:
+      - name: Needle Path
+        key: NEEDLE_PATH
+        placeholder: /path/to/needle-mcp
+        optional: true
+parameters:
+  - name: Needle API Key
+    key: NEEDLE_API_KEY
+    placeholder: your_needle_api_key

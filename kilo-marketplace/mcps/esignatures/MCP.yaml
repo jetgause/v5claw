@@ -1,0 +1,51 @@
+id: esignatures
+name: eSignatures
+description: Manages digital contract workflows including creation, sending, and template management for electronic
+  signatures through the eSignatures platform.
+author: esignaturescom
+url: https://github.com/esignaturescom/mcp-server-esignatures
+tags:
+  - digital-signatures
+  - contracts
+  - document-management
+  - templates
+  - collaboration
+content:
+  - name: UVX
+    prerequisites:
+      - Python
+      - uv
+    content: |
+      {
+        "command": "uvx",
+        "args": ["mcp-server-esignatures"],
+        "env": {
+          "ESIGNATURES_SECRET_TOKEN": "{{ESIGNATURES_SECRET_TOKEN}}"
+        }
+      }
+  - name: UV Development
+    prerequisites:
+      - Python
+      - uv
+    content: |
+      {
+        "command": "uv",
+        "args": [
+          "--directory",
+          "{{ESIGNATURES_PATH}}",
+          "run",
+          "mcp-server-esignatures"
+        ],
+        "env": {
+          "ESIGNATURES_SECRET_TOKEN": "{{ESIGNATURES_SECRET_TOKEN}}"
+        }
+      }
+    parameters:
+      - name: eSignatures Path
+        key: ESIGNATURES_PATH
+        placeholder: /path/to/mcp-server-esignatures
+        optional: true
+parameters:
+  - name: eSignatures Secret Token
+    key: ESIGNATURES_SECRET_TOKEN
+    placeholder: your_esignatures_api_secret_token

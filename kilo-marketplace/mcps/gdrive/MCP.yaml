@@ -1,0 +1,38 @@
+id: gdrive
+name: Google Drive
+description: Enables searching, listing, and reading files from Google Drive, with automatic export of Google Workspace
+  files to common formats like Markdown, CSV, and PNG.
+author: modelcontextprotocol
+url: https://github.com/modelcontextprotocol/servers-archived/tree/main/src/gdrive
+tags:
+  - google-drive
+  - file-management
+  - document-storage
+  - workspace
+  - file-search
+prerequisites:
+  - Google account with Drive API access
+content:
+  - name: NPX
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-gdrive"],
+        "env": {
+          "GDRIVE_CREDENTIALS_PATH": "{{GDRIVE_CREDENTIALS_PATH}}"
+        }
+      }
+  - name: Docker
+    prerequisites:
+      - Docker
+    content: >
+      {
+        "command": "docker",
+        "args": ["run", "-i", "--rm", "-v", "mcp-gdrive:/gdrive-server", "-e", "GDRIVE_CREDENTIALS_PATH=/gdrive-server/credentials.json", "mcp/gdrive"]
+      }
+parameters:
+  - name: Google Drive Credentials Path
+    key: GDRIVE_CREDENTIALS_PATH
+    placeholder: /path/to/.gdrive-server-credentials.json

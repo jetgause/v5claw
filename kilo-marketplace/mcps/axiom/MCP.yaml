@@ -1,0 +1,60 @@
+id: axiom
+name: Axiom
+description: Query and analyze data using Axiom Processing Language (APL), enabling AI agents to interact with Axiom
+  datasets through natural language.
+author: axiomhq
+url: https://github.com/axiomhq/mcp-server-axiom
+tags:
+  - data-query
+  - log-analysis
+  - apl
+  - datasets
+  - analytics
+content:
+  - name: Go Binary
+    content: |
+      {
+        "command": "{{AXIOM_BINARY_PATH}}/axiom-mcp",
+        "args": ["--config", "{{AXIOM_CONFIG_PATH}}"]
+      }
+    parameters:
+      - name: Axiom Config Path
+        key: AXIOM_CONFIG_PATH
+        placeholder: /path/to/config.txt
+  - name: Go Binary with Environment Variables
+    content: |
+      {
+        "command": "{{AXIOM_BINARY_PATH}}/axiom-mcp",
+        "env": {
+          "AXIOM_TOKEN": "{{AXIOM_TOKEN}}",
+          "AXIOM_URL": "{{AXIOM_URL}}",
+          "AXIOM_ORG_ID": "{{AXIOM_ORG_ID}}"
+        }
+      }
+  - name: Go Binary with Command Line Flags
+    content: |
+      {
+        "command": "{{AXIOM_BINARY_PATH}}/axiom-mcp",
+        "args": [
+          "-token", "{{AXIOM_TOKEN}}",
+          "-url", "{{AXIOM_URL}}",
+          "-query-rate", "1",
+          "-query-burst", "1",
+          "-datasets-rate", "1",
+          "-datasets-burst", "1"
+        ]
+      }
+parameters:
+  - name: Axiom Binary Path
+    key: AXIOM_BINARY_PATH
+    placeholder: /path/to/axiom-mcp
+  - name: Axiom Token
+    key: AXIOM_TOKEN
+    placeholder: xaat-your-token
+  - name: Axiom URL
+    key: AXIOM_URL
+    placeholder: https://api.axiom.co
+  - name: Axiom Org ID
+    key: AXIOM_ORG_ID
+    placeholder: your-org-id
+    optional: true

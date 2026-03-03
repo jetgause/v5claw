@@ -1,0 +1,46 @@
+id: clickup
+name: ClickUp
+description: Comprehensive ClickUp MCP server for project management integration with AI through Model Context Protocol.
+  Supports task management, time tracking, workspace organization, document management, member management, and tag
+  operations with 36 available tools for complete ClickUp automation.
+author: taazkareem
+url: https://github.com/TaazKareem/clickup-mcp-server
+tags:
+  - clickup
+  - project-management
+  - task-management
+  - time-tracking
+  - productivity
+  - automation
+  - workflow
+  - team-collaboration
+  - workspace
+  - api-integration
+prerequisites:
+  - ClickUp account
+  - ClickUp API key
+content:
+  - name: NPX
+    prerequisites:
+      - Node.js
+    content: >
+      {
+        "command": "npx",
+        "args": ["-y", "@taazkareem/clickup-mcp-server@0.8.4", "--hash", "sha512:TuWPCubHFrRNbghj34th+QFdOqwGljs0QP55s+d73JhsFVoKaXFuS4c5bHat8qwV9UyF6hAeX87UP0SmeH/QRg=="],
+        "env": {
+          "CLICKUP_API_KEY": "{{CLICKUP_API_KEY}}",
+          "CLICKUP_TEAM_ID": "{{CLICKUP_TEAM_ID}}",
+          "DOCUMENT_SUPPORT": "{{DOCUMENT_SUPPORT}}"
+        }
+      }
+    parameters:
+      - name: ClickUp API Key
+        key: CLICKUP_API_KEY
+        placeholder: pk_your_clickup_api_key
+      - name: ClickUp Team ID
+        key: CLICKUP_TEAM_ID
+        placeholder: your_team_id
+      - name: Document Support
+        key: DOCUMENT_SUPPORT
+        placeholder: "true"
+        optional: true

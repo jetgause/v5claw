@@ -1,0 +1,64 @@
+id: motherduck
+name: MotherDuck
+description: Enables database operations with MotherDuck and local DuckDB, providing tools for connection
+  initialization, schema reading, and query execution.
+author: motherduckdb
+url: https://github.com/motherduckdb/mcp-server-motherduck
+tags:
+  - duckdb
+  - motherduck
+  - sql
+  - database-management
+  - query-execution
+content:
+  - name: UVX
+    prerequisites:
+      - Python and uv
+    content: |
+      {
+        "command": "uvx",
+        "args": ["mcp-server-motherduck", "--db-path", "md:", "--motherduck-token", "{{MOTHERDUCK_TOKEN}}"]
+      }
+  - name: UVX with Local DuckDB
+    prerequisites:
+      - Python and uv
+    content: |
+      {
+        "command": "uvx",
+        "args": ["mcp-server-motherduck", "--db-path", "{{DB_PATH}}"]
+      }
+    parameters:
+      - name: Database Path
+        key: DB_PATH
+        placeholder: /path/to/your/local.db
+  - name: UVX with In-Memory Database
+    prerequisites:
+      - Python
+      - uv
+    content: |
+      {
+        "command": "uvx",
+        "args": ["mcp-server-motherduck", "--db-path", ":memory:"]
+      }
+  - name: UVX with Read-Only Mode
+    prerequisites:
+      - Python
+      - uv
+    content: |
+      {
+        "command": "uvx",
+        "args": ["mcp-server-motherduck", "--db-path", "{{DB_PATH}}", "--read-only"]
+      }
+  - name: UVX with SaaS Mode
+    prerequisites:
+      - Python
+      - uv
+    content: >
+      {
+        "command": "uvx",
+        "args": ["mcp-server-motherduck", "--db-path", "md:", "--motherduck-token", "{{MOTHERDUCK_TOKEN}}", "--saas-mode"]
+      }
+parameters:
+  - name: MotherDuck Token
+    key: MOTHERDUCK_TOKEN
+    placeholder: your_motherduck_token_here

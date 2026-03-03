@@ -1,0 +1,37 @@
+id: smartsheet
+name: Smartsheet
+description: A Model Context Protocol (MCP) server for interacting with the Smartsheet API. This server provides tools
+  for searching, retrieving, and updating Smartsheet sheets through the MCP protocol. Please follow the installation
+  instructions at https://github.com/smartsheet-platform/smar-mcp before using this server.
+author: smartsheet-platform
+url: https://github.com/smartsheet-platform/smar-mcp
+tags:
+  - smartsheet
+  - project-management
+  - collaboration
+  - api-integration
+  - automation
+  - sheets
+content:
+  - name: Local Development
+    prerequisites:
+      - Node.js
+      - npm
+      - Git
+    content: |
+      {
+        "command": "npm",
+        "args": ["start"],
+        "cwd": "{{SMARTSHEET_MCP_PATH}}",
+        "env": {
+          "SMARTSHEET_API_KEY": "{{SMARTSHEET_API_KEY}}"
+        }
+      }
+parameters:
+  - name: Smartsheet API Key
+    key: SMARTSHEET_API_KEY
+    placeholder: your_smartsheet_api_token
+  - name: Smartsheet MCP Path
+    key: SMARTSHEET_MCP_PATH
+    placeholder: /path/to/smar-mcp
+    optional: true

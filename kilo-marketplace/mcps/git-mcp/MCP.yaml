@@ -1,0 +1,43 @@
+id: git-mcp
+name: GitMCP
+description: GitMCP is a free, open-source, remote MCP server that transforms any GitHub project (repositories or GitHub
+  pages) into a documentation hub. It enables AI tools like Cursor to access up-to-date documentation and code, even if
+  the LLM has never encountered them, thereby eliminating code hallucinations seamlessly.
+author: idosal
+url: https://github.com/idosal/git-mcp
+tags:
+  - git
+  - github
+  - documentation
+  - code-search
+  - repository-management
+  - hallucination-reduction
+content:
+  - name: SSE
+    content: |
+      {
+        "type": "streamable-http",
+        "url": "https://gitmcp.io/{{OWNER}}/{{REPO}}"
+      }
+    parameters:
+      - name: Owner
+        key: OWNER
+        placeholder: microsoft
+      - name: Repo
+        key: REPO
+        placeholder: typescript
+  - name: NPX
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "mcp-remote@0.1.29", "https://gitmcp.io/{{OWNER}}/{{REPO}}"]
+      }
+    parameters:
+      - name: Owner
+        key: OWNER
+        placeholder: microsoft
+      - name: Repo
+        key: REPO
+        placeholder: typescript

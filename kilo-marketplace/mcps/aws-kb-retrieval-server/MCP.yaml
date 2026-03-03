@@ -1,0 +1,49 @@
+id: aws-kb-retrieval-server
+name: AWS Knowledge Base
+description: Retrieves information from AWS Knowledge Base using Bedrock Agent Runtime, supporting RAG-based queries
+  with customizable result counts.
+author: modelcontextprotocol
+url: https://github.com/modelcontextprotocol/servers-archived/tree/main/src/aws-kb-retrieval-server
+tags:
+  - aws
+  - bedrock
+  - rag
+  - knowledge-retrieval
+  - search
+content:
+  - name: NPX
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-aws-kb-retrieval"],
+        "env": {
+          "AWS_ACCESS_KEY_ID": "{{AWS_ACCESS_KEY_ID}}",
+          "AWS_SECRET_ACCESS_KEY": "{{AWS_SECRET_ACCESS_KEY}}",
+          "AWS_REGION": "{{AWS_REGION}}"
+        }
+      }
+  - name: Docker
+    prerequisites:
+      - Docker
+    content: >
+      {
+        "command": "docker",
+        "args": ["run", "-i", "--rm", "-e", "AWS_ACCESS_KEY_ID", "-e", "AWS_SECRET_ACCESS_KEY", "-e", "AWS_REGION", "mcp/aws-kb-retrieval-server"],
+        "env": {
+          "AWS_ACCESS_KEY_ID": "{{AWS_ACCESS_KEY_ID}}",
+          "AWS_SECRET_ACCESS_KEY": "{{AWS_SECRET_ACCESS_KEY}}",
+          "AWS_REGION": "{{AWS_REGION}}"
+        }
+      }
+parameters:
+  - name: AWS Access Key ID
+    key: AWS_ACCESS_KEY_ID
+    placeholder: your_aws_access_key_id
+  - name: AWS Secret Access Key
+    key: AWS_SECRET_ACCESS_KEY
+    placeholder: your_aws_secret_access_key
+  - name: AWS Region
+    key: AWS_REGION
+    placeholder: us-east-1

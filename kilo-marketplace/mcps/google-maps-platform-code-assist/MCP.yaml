@@ -1,0 +1,25 @@
+id: google-maps-platform-code-assist
+name: Google Maps Platform Code Assist
+description: Official Google Maps Platform MCP for AI-powered code assistance. Provides tools to generate client-side
+  and server-side code for Maps, Routes, and Places APIs, helping developers build geospatial applications faster.
+author: googlemaps
+url: https://github.com/googlemaps/platform-ai
+tags:
+  - google-maps
+  - code-generation
+  - geospatial
+  - maps
+  - routes
+  - places
+  - api-integration
+  - ai-assistant
+  - official
+content:
+  - name: NPX
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "@googlemaps/code-assist-mcp@0.2.0"]
+      }

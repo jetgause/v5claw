@@ -1,0 +1,45 @@
+id: watsonx
+name: WatsonX Flows
+description: Enables integration with watsonx.ai Flows Engine, providing tools for Google Books and Wikipedia searches
+  through a TypeScript-based MCP server implementation.
+author: IBM
+url: https://github.com/IBM/wxflows/tree/main/examples/mcp/javascript
+tags:
+  - watsonx
+  - flows-engine
+  - tool-integration
+  - search-tools
+  - ibm-cloud
+content:
+  - name: Node.js
+    content: |
+      {
+        "command": "node",
+        "args": ["{{WXFLOWS_PATH}}/build/index.js"],
+        "env": {
+          "WXFLOWS_APIKEY": "{{WXFLOWS_APIKEY}}",
+          "WXFLOWS_ENDPOINT": "{{WXFLOWS_ENDPOINT}}"
+        }
+      }
+  - name: NPM Development
+    content: |
+      {
+        "command": "npm",
+        "args": ["start"],
+        "cwd": "{{WXFLOWS_PATH}}",
+        "env": {
+          "WXFLOWS_APIKEY": "{{WXFLOWS_APIKEY}}",
+          "WXFLOWS_ENDPOINT": "{{WXFLOWS_ENDPOINT}}"
+        }
+      }
+parameters:
+  - name: WatsonX API Key
+    key: WXFLOWS_APIKEY
+    placeholder: your_wxflows_api_key
+  - name: WatsonX Endpoint
+    key: WXFLOWS_ENDPOINT
+    placeholder: your_wxflows_endpoint
+  - name: WatsonX Flows Path
+    key: WXFLOWS_PATH
+    placeholder: /path/to/wxflows/examples/mcp/javascript
+    optional: true

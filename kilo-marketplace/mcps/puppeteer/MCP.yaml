@@ -1,0 +1,29 @@
+id: puppeteer
+name: Puppeteer
+description: Provides browser automation capabilities using Puppeteer, enabling web page interaction, screenshots, and
+  JavaScript execution in a real browser environment.
+author: modelcontextprotocol
+url: https://github.com/modelcontextprotocol/servers-archived/tree/main/src/puppeteer
+tags:
+  - web-automation
+  - screenshots
+  - browser-control
+  - javascript
+  - testing
+content:
+  - name: NPX
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
+      }
+  - name: Docker
+    prerequisites:
+      - Docker
+    content: |
+      {
+        "command": "docker",
+        "args": ["run", "-i", "--rm", "--init", "-e", "DOCKER_CONTAINER=true", "mcp/puppeteer"]
+      }

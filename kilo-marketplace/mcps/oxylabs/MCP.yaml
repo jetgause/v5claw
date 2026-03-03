@@ -1,0 +1,56 @@
+id: oxylabs
+name: Oxylabs Scraper
+description: Advanced web scraping tool using Oxylabs Web Scraper API, supporting JavaScript rendering, HTML parsing,
+  and content transformation with flexible parsing options.
+author: oxylabs
+url: https://github.com/oxylabs/oxylabs-mcp
+tags:
+  - web-scraping
+  - content-extraction
+  - javascript-rendering
+  - html-parsing
+  - data-collection
+content:
+  - name: UVX
+    prerequisites:
+      - Python
+      - uv
+    content: |
+      {
+        "command": "uvx",
+        "args": ["oxylabs-mcp"],
+        "env": {
+          "OXYLABS_USERNAME": "{{OXYLABS_USERNAME}}",
+          "OXYLABS_PASSWORD": "{{OXYLABS_PASSWORD}}"
+        }
+      }
+  - name: Smithery Installation
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "@smithery/cli", "install", "@oxylabs/oxylabs-mcp", "--client", "claude"]
+      }
+  - name: UV with Local Development
+    content: |
+      {
+        "command": "uv",
+        "args": ["--directory", "{{OXYLABS_PATH}}", "run", "oxylabs-mcp"],
+        "env": {
+          "OXYLABS_USERNAME": "{{OXYLABS_USERNAME}}",
+          "OXYLABS_PASSWORD": "{{OXYLABS_PASSWORD}}"
+        }
+      }
+    parameters:
+      - name: Oxylabs Path
+        key: OXYLABS_PATH
+        placeholder: /path/to/oxylabs-mcp
+        optional: true
+parameters:
+  - name: Oxylabs Username
+    key: OXYLABS_USERNAME
+    placeholder: your_oxylabs_username
+  - name: Oxylabs Password
+    key: OXYLABS_PASSWORD
+    placeholder: your_oxylabs_password

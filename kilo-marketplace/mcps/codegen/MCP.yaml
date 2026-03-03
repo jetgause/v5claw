@@ -1,0 +1,41 @@
+id: codegen
+name: Codegen
+description: Enables parsing codebases and executing codemods through standardized model inference, supporting various
+  LLM providers via integration with the Codegen SDK.
+author: codegen-sh
+url: https://github.com/codegen-sh/codegen-sdk/tree/develop/codegen-examples/examples/codegen-mcp-server
+tags:
+  - code-generation
+  - codemod
+  - code-parsing
+  - sdk-integration
+  - llm-tools
+prerequisites:
+  - uv
+  - Python 3.12+
+content:
+  - name: UVX
+    prerequisites:
+      - Python and uv
+    content: >
+      {
+        "command": "uvx",
+        "args": [
+          "--from",
+          "git+https://github.com/codegen-sh/codegen-sdk.git#egg=codegen-mcp-server&subdirectory=codegen-examples/examples/codegen-mcp-server",
+          "codegen-mcp-server"
+        ]
+      }
+  - name: Direct Execution
+    prerequisites:
+      - Python
+      - uv
+    content: >
+      {
+        "command": "uvx",
+        "args": ["--from", "git+https://github.com/codegen-sh/codegen-sdk.git#egg=codegen-mcp-server&subdirectory=codegen-examples/examples/codegen-mcp-server", "codegen-mcp-server"]
+      }
+parameters:
+  - name: Prerequisites
+    key: PREREQUISITES
+    placeholder: Requires uv and Python 3.12+

@@ -1,0 +1,99 @@
+id: qdrant
+name: Qdrant
+description: A semantic memory layer enabling storage and retrieval of vector-based memories using the Qdrant vector
+  search engine, with support for both cloud and local deployments.
+author: qdrant
+url: https://github.com/qdrant/mcp-server-qdrant
+tags:
+  - vector-search
+  - semantic-memory
+  - embeddings
+  - storage
+  - retrieval
+content:
+  - name: UVX
+    prerequisites:
+      - Python and uv
+    content: |
+      {
+        "command": "uvx",
+        "args": ["mcp-server-qdrant"],
+        "env": {
+          "QDRANT_URL": "{{QDRANT_URL}}",
+          "QDRANT_API_KEY": "{{QDRANT_API_KEY}}",
+          "COLLECTION_NAME": "{{COLLECTION_NAME}}",
+          "EMBEDDING_MODEL": "{{EMBEDDING_MODEL}}"
+        }
+      }
+  - name: UVX with Local Database
+    prerequisites:
+      - Python
+      - uv
+    content: |
+      {
+        "command": "uvx",
+        "args": ["mcp-server-qdrant"],
+        "env": {
+          "QDRANT_LOCAL_PATH": "{{QDRANT_LOCAL_PATH}}",
+          "COLLECTION_NAME": "{{COLLECTION_NAME}}",
+          "EMBEDDING_MODEL": "{{EMBEDDING_MODEL}}"
+        }
+      }
+    parameters:
+      - name: Qdrant Local Path
+        key: QDRANT_LOCAL_PATH
+        placeholder: /path/to/qdrant/database
+  - name: UVX with SSE Transport
+    prerequisites:
+      - Python
+      - uv
+    content: |
+      {
+        "command": "uvx",
+        "args": ["mcp-server-qdrant", "--transport", "sse"],
+        "env": {
+          "QDRANT_URL": "{{QDRANT_URL}}",
+          "QDRANT_API_KEY": "{{QDRANT_API_KEY}}",
+          "COLLECTION_NAME": "{{COLLECTION_NAME}}",
+          "FASTMCP_PORT": "{{FASTMCP_PORT}}"
+        }
+      }
+    parameters:
+      - name: FastMCP Port
+        key: FASTMCP_PORT
+        placeholder: "8000"
+  - name: Docker
+    prerequisites:
+      - Docker
+    content: >
+      {
+        "command": "docker",
+        "args": ["run", "-p", "8000:8000", "-e", "QDRANT_URL", "-e", "QDRANT_API_KEY", "-e", "COLLECTION_NAME", "mcp-server-qdrant"],
+        "env": {
+          "QDRANT_URL": "{{QDRANT_URL}}",
+          "QDRANT_API_KEY": "{{QDRANT_API_KEY}}",
+          "COLLECTION_NAME": "{{COLLECTION_NAME}}"
+        }
+      }
+  - name: Smithery Installation
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["@smithery/cli", "install", "mcp-server-qdrant", "--client", "claude"]
+      }
+parameters:
+  - name: Qdrant URL
+    key: QDRANT_URL
+    placeholder: https://xyz-example.eu-central.aws.cloud.qdrant.io:6333
+  - name: Qdrant API Key
+    key: QDRANT_API_KEY
+    placeholder: your_qdrant_api_key
+  - name: Collection Name
+    key: COLLECTION_NAME
+    placeholder: your-collection-name
+  - name: Embedding Model
+    key: EMBEDDING_MODEL
+    placeholder: sentence-transformers/all-MiniLM-L6-v2
+    optional: true

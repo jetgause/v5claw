@@ -1,0 +1,58 @@
+id: gitlab
+name: GitLab
+description: Enables comprehensive GitLab project management including file operations, issue tracking, merge requests,
+  and repository management through the GitLab API.
+author: modelcontextprotocol
+url: https://github.com/modelcontextprotocol/servers/tree/main/src/gitlab
+tags:
+  - gitlab
+  - git
+  - repository-management
+  - collaboration
+  - ci-cd
+prerequisites:
+  - GitLab account
+content:
+  - name: UVX
+    prerequisites:
+      - Python and uv
+    content: |
+      {
+        "command": "uvx",
+        "args": ["mcp-server-gitlab"],
+        "env": {
+          "GITLAB_PERSONAL_ACCESS_TOKEN": "{{GITLAB_PERSONAL_ACCESS_TOKEN}}",
+          "GITLAB_API_URL": "{{GITLAB_API_URL}}"
+        }
+      }
+  - name: Python/Pip
+    prerequisites:
+      - Python
+    content: |
+      {
+        "command": "python",
+        "args": ["-m", "mcp_server_gitlab"],
+        "env": {
+          "GITLAB_PERSONAL_ACCESS_TOKEN": "{{GITLAB_PERSONAL_ACCESS_TOKEN}}",
+          "GITLAB_API_URL": "{{GITLAB_API_URL}}"
+        }
+      }
+  - name: Docker
+    prerequisites:
+      - Docker
+    content: |
+      {
+        "command": "docker",
+        "args": ["run", "-i", "--rm", "mcp/gitlab"],
+        "env": {
+          "GITLAB_PERSONAL_ACCESS_TOKEN": "{{GITLAB_PERSONAL_ACCESS_TOKEN}}",
+          "GITLAB_API_URL": "{{GITLAB_API_URL}}"
+        }
+      }
+parameters:
+  - name: GitLab Personal Access Token
+    key: GITLAB_PERSONAL_ACCESS_TOKEN
+    placeholder: your_gitlab_personal_access_token
+  - name: GitLab API URL
+    key: GITLAB_API_URL
+    placeholder: https://gitlab.com/api/v4

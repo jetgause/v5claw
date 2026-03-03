@@ -1,0 +1,20 @@
+id: microsoft-learn
+name: Microsoft Learn
+description: Official Microsoft Learn MCP server that provides access to Microsoft Learn content, including
+  documentation, tutorials, and learning paths.
+author: microsoft
+url: https://github.com/microsoftdocs/mcp
+tags:
+  - microsoft
+  - documentation
+  - learning
+  - tutorials
+  - azure
+  - official
+content:
+  - name: Remote MCP
+    content: |
+      {
+        "type": "streamable-http",
+        "url": "https://learn.microsoft.com/api/mcp"
+      }

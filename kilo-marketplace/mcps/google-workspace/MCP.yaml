@@ -1,0 +1,39 @@
+id: google-workspace
+name: Google Workspace
+description: Control Gmail, Google Calendar, Docs, Sheets, Slides, Chat, Forms, Tasks, Search & Drive with AI. The most
+  feature-complete Google Workspace / G Suite MCP server.
+author: taylorwilsdon
+url: https://github.com/taylorwilsdon/google_workspace_mcp
+tags:
+  - google-workspace
+  - g-suite
+  - google-drive
+  - google-sheets
+  - google-docs
+  - gmail
+  - google-calendar
+  - automation
+  - api-integration
+prerequisites:
+  - Google Cloud Project with OAuth 2.0 credentials
+content:
+  - name: UVX (Local)
+    prerequisites:
+      - Python and uv
+    content: >
+      {
+        "command": "uvx",
+        "args": ["--from", "workspace-mcp==1.4.7", "--hash", "sha256:4e98810f46bd370007e7c9a9337bcaf47cb91e21fed8fb59cf7c68d5a539a49f", "workspace-mcp", "--tool-tier", "core"],
+        "env": {
+          "GOOGLE_OAUTH_CLIENT_ID": "{{GOOGLE_OAUTH_CLIENT_ID}}",
+          "GOOGLE_OAUTH_CLIENT_SECRET": "{{GOOGLE_OAUTH_CLIENT_SECRET}}",
+          "OAUTHLIB_INSECURE_TRANSPORT": "1"
+        }
+      }
+parameters:
+  - name: Google OAuth Client ID
+    key: GOOGLE_OAUTH_CLIENT_ID
+    placeholder: your-google-oauth-client-id
+  - name: Google OAuth Client Secret
+    key: GOOGLE_OAUTH_CLIENT_SECRET
+    placeholder: your-google-oauth-client-secret

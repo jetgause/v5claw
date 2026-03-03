@@ -1,0 +1,44 @@
+id: linear
+name: Linear
+description: Facilitates project management with the Linear API, enabling issue tracking, project organization, and team
+  management through comprehensive tools for creating, updating, and managing work items.
+author: cline
+url: https://github.com/cline/linear-mcp
+tags:
+  - project-management
+  - issue-tracking
+  - team-collaboration
+  - linear-api
+  - workflow
+content:
+  - name: Node.js
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "node",
+        "args": ["{{LINEAR_PATH}}/build/index.js"],
+        "env": {
+          "LINEAR_API_KEY": "{{LINEAR_API_KEY}}"
+        }
+      }
+  - name: NPM Development
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npm",
+        "args": ["start"],
+        "cwd": "{{LINEAR_PATH}}",
+        "env": {
+          "LINEAR_API_KEY": "{{LINEAR_API_KEY}}"
+        }
+      }
+parameters:
+  - name: Linear API Key
+    key: LINEAR_API_KEY
+    placeholder: your_linear_api_key
+  - name: Linear MCP Path
+    key: LINEAR_PATH
+    placeholder: /path/to/linear-mcp
+    optional: true

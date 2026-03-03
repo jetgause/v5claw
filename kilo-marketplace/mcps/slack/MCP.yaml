@@ -1,0 +1,52 @@
+id: slack
+name: Slack
+description: Enables AI assistants to interact with Slack workspaces, providing tools for messaging, channel management,
+  reactions, user profiles, and thread management.
+author: modelcontextprotocol
+url: https://github.com/modelcontextprotocol/servers-archived/tree/main/src/slack
+tags:
+  - slack
+  - messaging
+  - team-collaboration
+  - chat
+  - workspace-management
+prerequisites:
+  - Slack workspace with bot permissions
+content:
+  - name: NPX
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-slack"],
+        "env": {
+          "SLACK_BOT_TOKEN": "{{SLACK_BOT_TOKEN}}",
+          "SLACK_TEAM_ID": "{{SLACK_TEAM_ID}}",
+          "SLACK_CHANNEL_IDS": "{{SLACK_CHANNEL_IDS}}"
+        }
+      }
+  - name: Docker
+    prerequisites:
+      - Docker
+    content: >
+      {
+        "command": "docker",
+        "args": ["run", "-i", "--rm", "-e", "SLACK_BOT_TOKEN", "-e", "SLACK_TEAM_ID", "-e", "SLACK_CHANNEL_IDS", "mcp/slack"],
+        "env": {
+          "SLACK_BOT_TOKEN": "{{SLACK_BOT_TOKEN}}",
+          "SLACK_TEAM_ID": "{{SLACK_TEAM_ID}}",
+          "SLACK_CHANNEL_IDS": "{{SLACK_CHANNEL_IDS}}"
+        }
+      }
+parameters:
+  - name: Slack Bot Token
+    key: SLACK_BOT_TOKEN
+    placeholder: xoxb-your-bot-token
+  - name: Slack Team ID
+    key: SLACK_TEAM_ID
+    placeholder: T01234567
+  - name: Slack Channel IDs
+    key: SLACK_CHANNEL_IDS
+    placeholder: C01234567,C76543210
+    optional: true

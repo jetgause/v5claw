@@ -1,0 +1,95 @@
+id: n8n-mcp
+name: n8n-MCP
+description: A Model Context Protocol (MCP) server that provides AI assistants with comprehensive access to n8n node
+  documentation, properties, and operations. Deploy in minutes to give Claude and other AI assistants deep knowledge
+  about n8n's 525+ workflow automation nodes.
+author: czlonkowski
+url: https://github.com/czlonkowski/n8n-mcp
+tags:
+  - n8n
+  - workflow-automation
+  - devops
+  - nodes
+  - automation
+  - ai-tools
+  - no-code
+  - low-code
+content:
+  - name: NPX (Docs only)
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "n8n-mcp@2.12.2"],
+        "env": {
+          "MCP_MODE": "stdio",
+          "LOG_LEVEL": "error",
+          "DISABLE_CONSOLE_OUTPUT": "true"
+        }
+      }
+  - name: NPX (Full)
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "n8n-mcp@2.12.2"],
+        "env": {
+          "MCP_MODE": "stdio",
+          "LOG_LEVEL": "error",
+          "DISABLE_CONSOLE_OUTPUT": "true",
+          "N8N_API_URL": "{{N8N_API_URL}}",
+          "N8N_API_KEY": "{{N8N_API_KEY}}"
+        }
+      }
+    parameters:
+      - name: n8n API URL
+        key: N8N_API_URL
+        placeholder: https://your-n8n-instance.com
+      - name: n8n API Key
+        key: N8N_API_KEY
+        placeholder: your-api-key
+  - name: Docker (Docs only)
+    prerequisites:
+      - Docker
+    content: |
+      {
+        "command": "docker",
+        "args": [
+          "run",
+          "-i",
+          "--rm",
+          "--init",
+          "-e", "MCP_MODE=stdio",
+          "-e", "LOG_LEVEL=error",
+          "-e", "DISABLE_CONSOLE_OUTPUT=true",
+          "ghcr.io/czlonkowski/n8n-mcp@sha256:80613ac30c3fe39a7b9d343104603804edfbc34c1cdc27e95459b15b7c651dd2"
+        ]
+      }
+  - name: Docker (Full)
+    prerequisites:
+      - Docker
+    content: |
+      {
+        "command": "docker",
+        "args": [
+          "run",
+          "-i",
+          "--rm",
+          "--init",
+          "-e", "MCP_MODE=stdio",
+          "-e", "LOG_LEVEL=error",
+          "-e", "DISABLE_CONSOLE_OUTPUT=true",
+          "-e", "N8N_API_URL={{N8N_API_URL}}",
+          "-e", "N8N_API_KEY={{N8N_API_KEY}}",
+          "ghcr.io/czlonkowski/n8n-mcp@sha256:80613ac30c3fe39a7b9d343104603804edfbc34c1cdc27e95459b15b7c651dd2"
+        ]
+      }
+    parameters:
+      - name: n8n API URL
+        key: N8N_API_URL
+        placeholder: https://your-n8n-instance.com
+      - name: n8n API Key
+        key: N8N_API_KEY
+        placeholder: your-api-key

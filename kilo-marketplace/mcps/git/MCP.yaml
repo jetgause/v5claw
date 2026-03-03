@@ -1,0 +1,49 @@
+id: git
+name: Git Tools
+description: Provides Git repository interaction and automation tools for reading, searching, and manipulating Git
+  repositories through commands like status, diff, commit, branch management, and more.
+author: modelcontextprotocol
+url: https://github.com/modelcontextprotocol/servers/tree/main/src/git
+tags:
+  - git
+  - version-control
+  - repository-management
+  - source-control
+  - development
+content:
+  - name: UVX
+    prerequisites:
+      - Python and uv
+    content: |
+      {
+        "command": "uvx",
+        "args": ["mcp-server-git", "--repository", "{{REPOSITORY_PATH}}"]
+      }
+  - name: NPX
+    prerequisites:
+      - Node.js
+    content: >
+      {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/inspector", "uvx", "mcp-server-git", "--repository", "{{REPOSITORY_PATH}}"]
+      }
+  - name: Python/Pip
+    prerequisites:
+      - Python
+    content: |
+      {
+        "command": "python",
+        "args": ["-m", "mcp_server_git", "--repository", "{{REPOSITORY_PATH}}"]
+      }
+  - name: Docker
+    prerequisites:
+      - Docker
+    content: |
+      {
+        "command": "docker",
+        "args": ["run", "--rm", "-i", "--mount", "type=bind,src={{REPOSITORY_PATH}},dst=/workspace", "mcp/git"]
+      }
+parameters:
+  - name: Repository Path
+    key: REPOSITORY_PATH
+    placeholder: /path/to/git/repo

@@ -1,0 +1,45 @@
+id: raygun
+name: Raygun
+description: Provides comprehensive access to Raygun's error tracking, crash reporting, and real user monitoring
+  features through API integration, enabling management of applications, errors, deployments, and performance metrics.
+author: MindscapeHQ
+url: https://github.com/MindscapeHQ/mcp-server-raygun
+tags:
+  - error-tracking
+  - crash-reporting
+  - performance-monitoring
+  - debugging
+  - application-monitoring
+content:
+  - name: NPX
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "@raygun.io/mcp-server-raygun"],
+        "env": {
+          "RAYGUN_PAT_TOKEN": "{{RAYGUN_PAT_TOKEN}}"
+        }
+      }
+  - name: Node.js
+    content: |
+      {
+        "command": "node",
+        "args": ["{{RAYGUN_PATH}}/build/index.js"],
+        "env": {
+          "RAYGUN_PAT_TOKEN": "{{RAYGUN_PAT_TOKEN}}",
+          "SOURCEMAP_ALLOWED_DIRS": "{{SOURCEMAP_ALLOWED_DIRS}}"
+        }
+      }
+    parameters:
+      - name: Source Map Allowed Directories
+        key: SOURCEMAP_ALLOWED_DIRS
+        placeholder: /path/to/sourcemaps,/another/path
+      - name: Raygun MCP Path
+        key: RAYGUN_PATH
+        placeholder: /path/to/mcp-server-raygun
+parameters:
+  - name: Raygun PAT Token
+    key: RAYGUN_PAT_TOKEN
+    placeholder: your_raygun_pat_token

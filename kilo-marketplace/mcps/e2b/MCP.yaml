@@ -1,0 +1,50 @@
+id: e2b
+name: Code Interpreter
+description: Adds secure code execution capabilities to Claude Desktop using E2B Sandbox, supporting both JavaScript and
+  Python environments.
+author: e2b-dev
+url: https://github.com/e2b-dev/mcp-server
+tags:
+  - code-execution
+  - sandbox
+  - javascript
+  - python
+  - claude-integration
+content:
+  - name: NPX
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "@e2b/mcp-server"],
+        "env": {
+          "E2B_API_KEY": "{{E2B_API_KEY}}"
+        }
+      }
+  - name: Smithery Installation
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["@smithery/cli", "install", "e2b", "--client", "claude"]
+      }
+  - name: Local Development
+    content: |
+      {
+        "command": "node",
+        "args": ["{{E2B_PATH}}/packages/js/dist/index.js"],
+        "env": {
+          "E2B_API_KEY": "{{E2B_API_KEY}}"
+        }
+      }
+    parameters:
+      - name: E2B Path
+        key: E2B_PATH
+        placeholder: /path/to/e2b-mcp-server
+        optional: true
+parameters:
+  - name: E2B API Key
+    key: E2B_API_KEY
+    placeholder: your_e2b_api_key

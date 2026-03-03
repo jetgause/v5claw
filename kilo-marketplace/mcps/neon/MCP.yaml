@@ -1,0 +1,58 @@
+id: neon
+name: Neon Database
+description: Enables natural language interaction with Neon PostgreSQL databases, supporting project management, schema
+  migrations, SQL queries, and database operations through the Neon API.
+author: neondatabase
+url: https://github.com/neondatabase/mcp-server-neon
+tags:
+  - postgresql
+  - database-management
+  - migrations
+  - sql
+  - neon-api
+content:
+  - name: Remote MCP
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "mcp-remote", "https://mcp.neon.tech/sse"]
+      }
+  - name: NPX with API Key
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "@neondatabase/mcp-server-neon", "start", "{{NEON_API_KEY}}"]
+      }
+  - name: Smithery Installation
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "@smithery/cli", "install", "neon", "--client", "claude"]
+      }
+  - name: Windows CMD
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "cmd",
+        "args": ["/c", "npx", "-y", "@neondatabase/mcp-server-neon", "start", "{{NEON_API_KEY}}"]
+      }
+  - name: Windows WSL
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "wsl",
+        "args": ["npx", "-y", "@neondatabase/mcp-server-neon", "start", "{{NEON_API_KEY}}"]
+      }
+parameters:
+  - name: Neon API Key
+    key: NEON_API_KEY
+    placeholder: your_neon_api_key
+    optional: true

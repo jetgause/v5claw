@@ -1,0 +1,43 @@
+id: firebase
+name: Firebase
+description: The Firebase MCP server allows AI-powered development tools to work with your Firebase projects. It can
+  create and manage Firebase projects, manage Authentication users, work with data in Cloud Firestore and Data Connect,
+  retrieve schemas, understand security rules, and send messages with Cloud Messaging.
+author: firebase
+url: https://firebase.google.com/docs/cli/mcp-server
+tags:
+  - firebase
+  - gcp
+  - firestore
+  - authentication
+  - cloud-functions
+  - hosting
+  - storage
+  - data-connect
+  - cloud-messaging
+content:
+  - name: NPX
+    prerequisites:
+      - Node.js
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "firebase-tools@14.15.2", "experimental:mcp"]
+      }
+  - name: NPX with Options
+    prerequisites:
+      - Node.js
+    content: >
+      {
+        "command": "npx",
+        "args": ["-y", "firebase-tools@14.15.2", "experimental:mcp", "--dir", "{{FIREBASE_DIR}}", "--only", "{{FIREBASE_ONLY}}"]
+      }
+    parameters:
+      - name: Project Directory
+        key: FIREBASE_DIR
+        placeholder: /Users/turing/my-project
+        optional: true
+      - name: Feature Groups
+        key: FIREBASE_ONLY
+        placeholder: auth,firestore,storage
+        optional: true

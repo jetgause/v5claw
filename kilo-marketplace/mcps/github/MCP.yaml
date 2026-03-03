@@ -1,0 +1,31 @@
+id: github
+name: GitHub
+description: GitHub's official MCP Server that provides seamless integration with GitHub APIs, enabling advanced
+  automation and interaction capabilities for developers and tools.
+author: github
+url: https://github.com/github/github-mcp-server
+tags:
+  - github
+  - git
+  - repository-management
+  - issue-tracking
+  - pull-requests
+  - code-scanning
+  - collaboration
+  - api-integration
+prerequisites:
+  - Node.js
+  - GitHub account
+  - Classic GitHub Personal Access Token (generate at https://github.com/settings/tokens/new)
+content: >
+  {
+    "command": "npx",
+    "args": ["-y", "@modelcontextprotocol/server-github"],
+    "env": {
+      "GITHUB_PERSONAL_ACCESS_TOKEN": "{{GITHUB_PERSONAL_ACCESS_TOKEN}}"
+    }
+  }
+parameters:
+  - name: GitHub Personal Access Token
+    key: GITHUB_PERSONAL_ACCESS_TOKEN
+    placeholder: ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx (classic PAT from https://github.com/settings/tokens/new)

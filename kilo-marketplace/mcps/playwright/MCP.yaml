@@ -1,0 +1,60 @@
+id: playwright
+name: Playwright
+description: Official Microsoft MCP server providing browser automation capabilities using Playwright. Enables LLMs to
+  interact with web pages through structured accessibility snapshots, bypassing the need for screenshots or
+  visually-tuned models. Supports fast and lightweight automation with deterministic tool application.
+author: microsoft
+url: https://github.com/microsoft/playwright-mcp
+tags:
+  - browser-automation
+  - web-testing
+  - playwright
+  - microsoft
+  - accessibility
+  - web-scraping
+  - ui-automation
+  - headless-browser
+  - official
+content:
+  - name: NPX
+    prerequisites:
+      - Node.js 18+
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "@playwright/mcp@0.0.38"]
+      }
+  - name: Docker
+    prerequisites:
+      - Docker
+    content: >
+      {
+        "command": "docker",
+        "args": ["run", "-i", "--rm", "--init", "--pull=always", "mcr.microsoft.com/playwright/mcp@sha256:48cfafeaaf213c618fff8d2e311f33b170dd1eab87a351260cdb9c24a785fc50"]
+      }
+  - name: NPX with Chrome Extension
+    prerequisites:
+      - Node.js 18+
+      - Chrome browser
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "@playwright/mcp@0.0.38", "--port={{PORT}}", "--extension"]
+      }
+    parameters:
+      - name: Port
+        key: PORT
+        placeholder: "4242"
+        optional: true
+  - name: NPX with Storage State
+    prerequisites:
+      - Node.js 18+
+    content: |
+      {
+        "command": "npx",
+        "args": ["-y", "@playwright/mcp@0.0.38", "--isolated", "--storage-state={{STORAGE_STATE_PATH}}"]
+      }
+    parameters:
+      - name: Storage State Path
+        key: STORAGE_STATE_PATH
+        placeholder: /path/to/storage.json
